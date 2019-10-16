@@ -1,0 +1,23 @@
+version: 1
+
+update_configs:
+
+  - package_manager: "terraform"
+    directory: "/"
+    update_schedule: "daily"
+
+  - package_manager: "go:modules"
+    directory: "/tests"
+    update_schedule: "daily"
+
+  - package_manager: "python"
+    directory: "/modules/lambda_functions/ldap_query"
+    update_schedule: "daily"
+
+  - package_manager: "python"
+    directory: "/modules/lambda_functions/slack_notifier"
+    update_schedule: "daily"
+
+  - package_manager: "python"
+    directory: "/tests/integration_test/test_infrastructure/modules/lambda/populate_ldap"
+    update_schedule: "daily"

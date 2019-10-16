@@ -1,0 +1,4 @@
+FROM amazonlinux
+
+RUN yum install zip python3 python-devel python3-devel openldap-devel gcc -y && \
+  python3 -m pip install --upgrade pip

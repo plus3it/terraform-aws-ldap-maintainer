@@ -1,4 +1,4 @@
-module {{cookiecutter.module_name}}/tests
+module terraform-aws-ldap-maintenance/tests
 
 go 1.13
 
