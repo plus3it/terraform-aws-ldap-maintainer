@@ -96,18 +96,27 @@ def get_slack_payload(event):
         exit
 
 
-def notify_stepfunction(slack_payload):
+def build_sfn_message(s3_key, slack_payload):
+    msg = {}
+    button_value = json.loads(unquote(slack_payload['actions'][0]['value']))
+    msg['button_pressed'] = slack_payload['actions'][0]['action_id']
+    msg['slack_message_key'] = s3_key
+    msg['ldap_scan_results'] = button_value['ldap_scan_results']
+    return {
+        "message": msg,
+        "task_token": button_value['task_token']
+    }
+
+
+def notify_stepfunction(message, task_token):
     """Sends a task token to the step function service and sets the
     slack response as the output of the sfn task waiting on the token
-
     """
-    slack_payload['button_pressed'] = slack_payload['actions'][0]['action_id']
-    task_token = unquote(slack_payload['actions'][0]['value'])
     sfn = boto3.client("stepfunctions")
-    log.debug("Sending slack_payload to stepfunctions")
+    log.debug("Sending message to stepfunctions")
     response = sfn.send_task_success(
         taskToken=task_token,
-        output=json.dumps(slack_payload)
+        output=json.dumps(message)
     )
     log.debug(f"Received response from stepfunctions: {response}")
 
@@ -198,6 +207,7 @@ def s3upload(
             bucket,
             object_name,
             json.dumps(object_content).encode("utf-8"))
+    return object_name
 
 
 def handler(event, context):
@@ -206,9 +216,10 @@ def handler(event, context):
     event = get_slack_payload(event)
     log.debug(f"received slack payload: {event}")
     # upload the payload to s3
-    s3upload(event['payload'])
+    s3_key = s3upload(event['payload'])
     # send button status to the stepfunction
-    notify_stepfunction(event['payload'])
+    msg = build_sfn_message(s3_key, event['payload'])
+    notify_stepfunction(**msg)
 
     # validate the message received from slack and that
     # the user is authorized to take the action

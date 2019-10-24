@@ -199,10 +199,16 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "run_ldap_query": {
     "Type": "Task",
     "Resource": "arn:aws:states:::lambda:invoke",
+    "Catch": [
+      {
+        "ErrorEquals": [ "States.TaskFailed" ],
+        "Next": "send_error_to_slack"
+      }
+    ],
     "Parameters": {
       "FunctionName": "${module.ldap_query_lambda.function_arn}",
       "Payload": {
-        "Input": {"action": "query"}
+        "action": "query"
       }
     },
     "Next": "wait_for_manual_approval"
@@ -238,7 +244,7 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
             "FunctionName": "${module.slack_notifier.function_name}",
-            "Payload":{
+            "Payload": {
               "message_to_slack": "The LDAP operation has been disapproved"
             }
       },
@@ -256,6 +262,8 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "Parameters": {
       "FunctionName": "${module.slack_notifier.function_name}",
       "Payload": {
+        "slack_message_key.$": "$.slack_message_key",
+        "ldap_scan_results.$": "$.ldap_scan_results",
         "message_to_slack": "The LDAP operation has been approved. I'll notify you when the operation is complete."
       }
     },
@@ -265,10 +273,18 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "run_ldap_query_again": {
     "Type": "Task",
     "Resource": "arn:aws:states:::lambda:invoke",
+    "Catch": [
+      {
+        "ErrorEquals": [ "States.TaskFailed" ],
+        "Next": "send_error_to_slack"
+      }
+    ],
     "Parameters": {
       "FunctionName": "${module.ldap_query_lambda.function_arn}",
       "Payload": {
-        "Input": {"action": "disable"}
+        "slack_message_key.$": "$.Payload.slack_message_key",
+        "ldap_scan_results.$": "$.Payload.ldap_scan_results",
+        "action": "disable"
       }
     },
     "Next": "dynamodb_cleanup"
@@ -277,10 +293,18 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "dynamodb_cleanup": {
     "Type": "Task",
     "Resource": "arn:aws:states:::lambda:invoke",
+    "Catch": [
+      {
+        "ErrorEquals": [ "States.TaskFailed" ],
+        "Next": "send_error_to_slack"
+      }
+    ],
     "Parameters": {
       "FunctionName": "${module.dynamodb_cleanup.function_arn}",
       "Payload": {
-        "Input": {"action": "remove"}
+        "slack_message_key.$": "$.Payload.slack_message_key",
+        "ldap_scan_results.$": "$.Payload.ldap_scan_results",
+        "action": "remove"
       }
     },
     "Next": "send_status_to_slack"
@@ -292,8 +316,23 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
       "Parameters": {
             "FunctionName": "${module.slack_notifier.function_name}",
             "Payload":{
-              "event.$": "$",
+              "slack_message_key.$": "$.Payload.slack_message_key",
+              "ldap_scan_results.$": "$.Payload.ldap_scan_results",
               "message_to_slack": "LDAP operations are complete"
+            }
+      },
+    "End": true
+    },
+
+    "send_error_to_slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+            "FunctionName": "${module.slack_notifier.function_name}",
+            "Payload":{
+              "slack_message_key.$": "$.Payload.slack_message_key",
+              "ldap_scan_results.$": "$.Payload.ldap_scan_results",
+              "message_to_slack": "An error occurred!"
             }
       },
     "End": true

@@ -86,7 +86,7 @@ class SlackMessageBuilder:
     def __init__(
             self,
             channel,
-            artifact_urls,
+            artifacts,
             user_counts,
             report_time,
             task_token):
@@ -94,10 +94,11 @@ class SlackMessageBuilder:
         self.username = "ldapmaintainerbot"
         self.icon_emoji = ":robot_face:"
         self.timestamp = get_time()
-        self.artifact_urls = artifact_urls
+        self.artifacts = artifacts
         self.user_counts = user_counts
         self.report_time = report_time
         self.task_token = task_token
+        self.ldap_scan_results = ""
 
     def get_message_payload(self):
         return {
@@ -123,10 +124,22 @@ class SlackMessageBuilder:
             f"\n\t greater than 120 days: {self.user_counts['120']}"
             f"\n\t gerater than 90 days: {self.user_counts['90']}"
             f"\n\t greater than 60 days: {self.user_counts['60']}"
-            f"\n\n full details available here: ")
-        for url in self.artifact_urls:
-            text += f"<{self.artifact_urls[url]}|{url}>\n"
+            )
+        human_readable = ""
+        machine_readable = ""
+        for artifact in self.artifacts:
+            file_name = artifact["file_name"]
+            url = artifact["url"]
+            if not artifact['raw_scan_results']:
+                human_readable += f"\n <{url}|{file_name}> \n"
+            else:
+                self.ldap_scan_results = file_name
+                machine_readable += f"\n <{url}|{file_name}> \n"
         text += (
+            f"\n\n human readable details available here: "
+            f"{human_readable}"
+            f"\n\n machine readable details available here: "
+            f"{machine_readable}"
             f"\n *Note*: When this message is 1 hour old these"
             f" urls will no longer be functional\n\n")
         return self._get_text_block(text)
@@ -168,6 +181,12 @@ class SlackMessageBuilder:
     def _get_buttons(self):
         actions = ["deny", "approve"]
         buttons = []
+        button_value = json.dumps(
+            {
+                "task_token": self.task_token,
+                "ldap_scan_results": self.ldap_scan_results
+            }
+        )
         for action in actions:
             if action == "approve":
                 style = "primary"
@@ -176,7 +195,7 @@ class SlackMessageBuilder:
             buttons.append(
                 self._get_button(
                     action.capitalize(),
-                    self.task_token,
+                    button_value,
                     style
                 )
             )
@@ -203,7 +222,7 @@ def build_slack_user_message(event):
     payload = event['event']['Payload']
     message_body = SlackMessageBuilder(
         channel=TARGET_CHANNEL,
-        artifact_urls=payload['artifact_urls'],
+        artifacts=payload['artifacts'],
         user_counts=payload['query_results']['totals'],
         report_time=datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
         task_token=task_token
@@ -270,20 +289,15 @@ def retrieve_s3_object_contents(
 ):
     return json.loads(s3.get_object(
         Bucket=bucket,
-        Key=s3_obj['Key']
+        Key=s3_obj
         )['Body'].read().decode('utf-8'))
-
-
-def get_slack_response():
-    obj = get_latest_s3_object()
-    return retrieve_s3_object_contents(obj)
 
 
 def handler(event, context):
     log.debug(f"Received event: {json.dumps(event)}")
     if event.get('message_to_slack'):
         message = event['message_to_slack']
-        response = get_slack_response()
+        response = retrieve_s3_object_contents(event['slack_message_key'])
         # When updating an existing slack message the
         # entire message must be modified and re-sent
         original_blocks = response['message']['blocks']

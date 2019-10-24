@@ -93,7 +93,7 @@ def apply_scan_results(updated_scan_results):
         the updated scan results
     """
     for item in updated_scan_results['Items']:
-        if item['has_updates']:
+        if item.get('has_updates'):
             table.update_item(
                 Key={
                     "account_name": item["account_name"]
@@ -107,37 +107,14 @@ def apply_scan_results(updated_scan_results):
             log.info(f"updated {item['account_name']}")
 
 
-def get_last_modified():
-    return lambda obj: int(obj['LastModified'].strftime('%s'))
-
-
-def get_latest_s3_object(
-    bucket=os.environ['ARTIFACTS_BUCKET'],
-    prefix='user_expiration_table'
-):
-    """
-    Retrieve the newest object in the target s3 bucket
-    """
-    response = s3.list_objects_v2(
-        Bucket=bucket,
-        Prefix=prefix)
-    all = response['Contents']
-    return max(all, key=lambda x: x['LastModified'])
-
-
 def retrieve_s3_object_contents(
     s3_obj,
     bucket=os.environ['ARTIFACTS_BUCKET']
 ):
     return json.loads(s3.get_object(
         Bucket=bucket,
-        Key=s3_obj['Key']
+        Key=s3_obj
         )['Body'].read().decode('utf-8'))
-
-
-def get_previous_scan_results():
-    s3_obj = get_latest_s3_object()
-    return retrieve_s3_object_contents(s3_obj)
 
 
 # this should probably be called recursively for all users in the input list
@@ -157,9 +134,8 @@ def remove_users_in_list(users):
 
 def handler(event, context):
     log.debug(f"Received event: {event}")
-    if event.get('Input'):
-        event = event['Input']
     if event['action'] == "remove":
-        users = get_previous_scan_results()['120']
+        users = retrieve_s3_object_contents(event['ldap_scan_results'])['120']
         remove_users_in_list(users)
         log.info('Successfully removed the stale users from dynamodb')
+        return event

@@ -11,6 +11,7 @@ from datetime import datetime
 
 import ldap
 import ldap.asyncsearch
+from jinja2 import Environment, FileSystemLoader
 
 
 DEFAULT_LOG_LEVEL = logging.DEBUG
@@ -254,18 +255,56 @@ class LdapMaintainer:
         # could be an alternative way of user disablement
 
 
-def create_table(content):
+def get_file_name(file_name, extension):
+    timestamp = datetime.now().strftime("%Y_%m_%d_T%H%M%S.%f")
+    return f"{file_name}_{timestamp}.{extension}"
+
+
+def create_json_doc(content):
     """create a table"""
     # This can be fleshed out to make the retrieved information
     # more user friendly if desired/required
-    return json.dumps(content)
+    artifact = {}
+    artifact['content'] = json.dumps(content)
+    artifact['file_name'] = get_file_name("user_expiration_table", "json")
+    artifact['raw_scan_results'] = True
+    return artifact
+
+
+def get_html_table_headers(user_list):
+    table_headers = []
+    for key in user_list['120'][0].keys():
+        table_headers.append(key)
+    return table_headers
+
+
+def render_template(template="html_table.html", **kwargs):
+    env = Environment(
+        loader=FileSystemLoader(os.path.join(
+                os.path.dirname(__file__), 'templates'
+                ), encoding='utf8'))
+    template = env.get_template(template)
+    output_from_parsed_template = template.render(**kwargs)
+    return output_from_parsed_template
+
+
+def create_html_table(content):
+    # un-group the users for the html table
+    template_contents = {
+        "table_headers": get_html_table_headers(content),
+        "user_list": content
+    }
+    artifact = {}
+    artifact['content'] = render_template(**template_contents)
+    artifact['file_name'] = get_file_name("user_expiration", "html")
+    return artifact
 
 
 def generate_artifacts(content):
     """Returns the list of objects to upload to s3"""
     artifacts = {}
-    artifacts['user_expiration_table'] = create_table(content)
-    # artifacts.append(LdapMaintainer().get_ldif())
+    artifacts['user_expiration_table'] = create_json_doc(content)
+    artifacts['user_expiration_html'] = create_html_table(content)
     return artifacts
 
 
@@ -290,6 +329,7 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
         s3.put_object(
             Bucket=dest_bucket_name,
             ACL="private",
+            ContentEncoding="utf-8",
             Key=dest_object_name,
             Body=object_data
             )
@@ -323,24 +363,44 @@ def create_presigned_url(bucket_name, object_name, expiration=3600):
     return response
 
 
-def upload_artifacts(content):
-    presigned_urls = {}
+def upload_artifact(artifact):
+    """Uploads an artifact to s3 and generates a presigned url
+
+    Arguments:
+        artifact {dict} -- dictionary containing the artifact's
+        contents and file name
+
+    Returns:
+        dict -- dictionary containing the object name and presigned url
+    """
+    bucket_name = os.environ['ARTIFACTS_BUCKET']
+    log.debug(f'Uploading object: {artifact["file_name"]} to {bucket_name}')
+    if put_object(
+            bucket_name,
+            artifact["file_name"],
+            artifact["content"].encode("utf-8")):
+        presigned_url = create_presigned_url(
+            bucket_name, artifact["file_name"])
+    else:
+        log.error('Encountered error when uploading artifact')
+    is_raw_scan_result = False
+    if artifact.get("raw_scan_results"):
+        is_raw_scan_result = True
+    return {
+        "file_name": artifact["file_name"],
+        "url": presigned_url,
+        "raw_scan_results": is_raw_scan_result
+    }
+
+
+def upload_all_artifacts(content):
     artifacts = generate_artifacts(content)
     log.debug(f"generated artifacts: {artifacts}")
-    bucket_name = os.environ['ARTIFACTS_BUCKET']
-    timestamp = datetime.now().strftime("%Y-%m-%d-T%H%M%S.%f")
-    for key in artifacts:
-        object_name = f"{key}-{timestamp}.json"
-        log.debug(f'Uploading object: {object_name} to {bucket_name}')
-        if put_object(
-                bucket_name,
-                object_name,
-                artifacts[key].encode("utf-8")):
-            presigned_urls[key] = create_presigned_url(
-                bucket_name, object_name)
-        else:
-            log.error('Encountered error when uploading artifact')
-    return presigned_urls
+    response = []
+    for artifact in artifacts:
+        # log.info(artifacts[artifact])
+        response.append(upload_artifact(artifacts[artifact]))
+    return response
 
 
 def get_user_counts(users):
@@ -350,37 +410,14 @@ def get_user_counts(users):
     return response
 
 
-def get_last_modified():
-    return lambda obj: int(obj['LastModified'].strftime('%s'))
-
-
-def get_latest_s3_object(
-    bucket=os.environ['ARTIFACTS_BUCKET'],
-    prefix='user_expiration_table'
-):
-    """
-    Retrieve the newest object in the target s3 bucket
-    """
-    response = s3.list_objects_v2(
-        Bucket=bucket,
-        Prefix=prefix)
-    all = response['Contents']
-    return max(all, key=lambda x: x['LastModified'])
-
-
 def retrieve_s3_object_contents(
     s3_obj,
     bucket=os.environ['ARTIFACTS_BUCKET']
 ):
     return json.loads(s3.get_object(
         Bucket=bucket,
-        Key=s3_obj['Key']
+        Key=s3_obj
         )['Body'].read().decode('utf-8'))
-
-
-def get_previous_scan_results():
-    s3_obj = get_latest_s3_object()
-    return retrieve_s3_object_contents(s3_obj)
 
 
 def handler(event, context):
@@ -390,9 +427,12 @@ def handler(event, context):
         "action": query | disable
     }
     """
-    log.debug(f'Received event: {event}')
-    if event.get('Input'):
-        event = event['Input']
+    log.info(f'Received event: {event}')
+    if event.get("Payload"):
+        event = event['Payload']
+    elif event.get("Input"):
+        event = event["Input"]
+    # try:
     if event.get("action"):
         if event['action'] == "query":
             users = LdapMaintainer().get_stale_users()
@@ -401,10 +441,14 @@ def handler(event, context):
                 "query_results": {
                     "totals": get_user_counts(users)
                 },
-                "artifact_urls": upload_artifacts(users),
+                "artifacts": upload_all_artifacts(users)
                 }
         elif event['action'] == "disable":
-            users = get_previous_scan_results()['120']
+            users = retrieve_s3_object_contents(
+                event['ldap_scan_results'])['120']
             log.info(f"Disabling the following users: {users}")
             LdapMaintainer().disable_users(users)
             log.info("Users successfully disabled")
+            return event
+    # except KeyError as e:
+    #     log.error(f"Event received was not in the correct format: {e}")
