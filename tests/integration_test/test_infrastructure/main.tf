@@ -141,6 +141,8 @@ module "win_ad_mgmt" {
 
 # dynamodb
 resource "aws_dynamodb_table" "test_table" {
+  count = var.create_dynamodb ? 1 : 0
+
   name           = var.project_name
   billing_mode   = "PROVISIONED"
   read_capacity  = 20
@@ -182,9 +184,6 @@ locals {
       formatlist("%s@email.com", join(".", split(" ", name)))
     ]
   ])
-}
-
-locals {
 
   email_object = {
     "Distro1" : local.distro_emails_0,
@@ -200,6 +199,8 @@ locals {
 }
 
 data "template_file" "test" {
+  count = var.create_dynamodb ? 1 : 0
+
   template = "${file("${path.module}/table_layout.json.tpl")}"
   vars = {
     account_name = "test123"
@@ -208,10 +209,12 @@ data "template_file" "test" {
 }
 
 resource "aws_dynamodb_table_item" "email_distro" {
-  table_name = aws_dynamodb_table.test_table.name
-  hash_key   = aws_dynamodb_table.test_table.hash_key
+  count = var.create_dynamodb ? 1 : 0
 
-  item = data.template_file.test.rendered
+  table_name = aws_dynamodb_table.test_table[count.index].name
+  hash_key   = aws_dynamodb_table.test_table[count.index].hash_key
+
+  item = data.template_file.test[count.index].rendered
 }
 
 # lambda function to populate ldap

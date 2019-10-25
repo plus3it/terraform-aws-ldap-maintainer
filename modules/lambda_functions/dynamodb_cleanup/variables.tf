@@ -30,3 +30,8 @@ variable "artifacts_bucket_name" {
   description = "Name of the artifacts bucket"
   type        = string
 }
+
+variable "create_function" {
+  description = "Controls whether to create the dynamodb clean function"
+  default     = true
+}

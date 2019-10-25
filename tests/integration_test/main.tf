@@ -1,6 +1,7 @@
 module "test_infrastructure" {
   source = "./test_infrastructure"
 
+  create_dynamodb              = var.create_dynamodb_cleanup
   project_name                 = var.project_name
   certificate_arn              = var.certificate_arn
   target_zone_name             = var.target_zone_name
@@ -14,14 +15,15 @@ module "test_infrastructure" {
 module "ldap_maintainer" {
   source = "../../"
 
-  domain_base_dn       = module.test_infrastructure.domain_base_dn
-  dynamodb_table_name  = module.test_infrastructure.dynamodb_table_name
-  dynamodb_table_arn   = module.test_infrastructure.dynamodb_table_arn
-  ldaps_url            = module.test_infrastructure.ldaps_url
-  svc_user_dn          = module.test_infrastructure.svc_user_dn
-  svc_user_pwd_ssm_key = module.test_infrastructure.svc_user_pwd_ssm_key
-  vpc_id               = module.test_infrastructure.vpc_id
-  slack_channel_id     = var.slack_channel_id
-  slack_api_token      = var.slack_api_token
-  slack_signing_secret = var.slack_signing_secret
+  create_dynamodb_cleanup = var.create_dynamodb_cleanup
+  domain_base_dn          = module.test_infrastructure.domain_base_dn
+  dynamodb_table_name     = module.test_infrastructure.dynamodb_table_name
+  dynamodb_table_arn      = module.test_infrastructure.dynamodb_table_arn
+  ldaps_url               = module.test_infrastructure.ldaps_url
+  svc_user_dn             = module.test_infrastructure.svc_user_dn
+  svc_user_pwd_ssm_key    = module.test_infrastructure.svc_user_pwd_ssm_key
+  vpc_id                  = module.test_infrastructure.vpc_id
+  slack_channel_id        = var.slack_channel_id
+  slack_api_token         = var.slack_api_token
+  slack_signing_secret    = var.slack_signing_secret
 }

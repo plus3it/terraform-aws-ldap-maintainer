@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 variable "project_name" {
   default     = "ldap-maintainer"
   description = "Name of the project"
@@ -81,4 +78,9 @@ variable "maintenance_schedule" {
   default     = "cron(0 8 1 * ? *)"
   description = "Periodicity at which to trigger the ldap maintenance step function"
 }
->>>>>>> 2fab932... Module initialization
+
+variable "create_dynamodb_cleanup" {
+  type        = bool
+  default     = true
+  description = "Controls wether to create the dynamodb cleanup resources"
+}

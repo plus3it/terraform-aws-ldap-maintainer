@@ -8,6 +8,7 @@ Deploys the ldap-maintenance project alongside a SimpleAD instance
 |------|-------------|:----:|:-----:|:-----:|
 | additional\_ips\_allow\_inbound | List of IP addresses in CIDR notation to allow inbound on the provisioned sg | list(string) | `<list>` | no |
 | certificate\_arn | ARN of the certificate to back the LDAPS endpoint | string | n/a | yes |
+| create\_dynamodb\_cleanup | Controls wether to create the dynamodb cleanup resources | bool | `"true"` | no |
 | create\_windows\_instance | Boolean used to control the creation of the windows domain member | bool | `"true"` | no |
 | directory\_name | DNS name of the SimpleAD directory | string | n/a | yes |
 | instance\_profile | Name of the instance profile to attach to the provisioned instance | string | `""` | no |

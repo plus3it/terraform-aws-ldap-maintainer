@@ -58,6 +58,7 @@ module "slack_notifier" {
 module "dynamodb_cleanup" {
   source = "./modules/lambda_functions/dynamodb_cleanup"
 
+  create_function       = var.create_dynamodb_cleanup
   project_name          = var.project_name
   dynamodb_table_name   = var.dynamodb_table_name
   dynamodb_table_arn    = var.dynamodb_table_arn
@@ -111,6 +112,15 @@ resource "aws_s3_bucket" "artifacts" {
 
 }
 
+locals {
+  lambda_role_arns = compact([
+    module.slack_notifier.role_arn,
+    module.slack_event_listener.role_arn,
+    module.ldap_query_lambda.role_arn,
+    module.dynamodb_cleanup.role_arn
+  ])
+}
+
 resource "aws_s3_bucket_policy" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
   policy = <<POLICY
@@ -121,12 +131,7 @@ resource "aws_s3_bucket_policy" "artifacts" {
     {
         "Effect": "Allow",
         "Principal": {
-            "AWS": [
-              "${module.slack_notifier.role_arn}",
-              "${module.slack_event_listener.role_arn}",
-              "${module.ldap_query_lambda.role_arn}",
-              "${module.dynamodb_cleanup.role_arn}"
-              ]
+            "AWS": ${jsonencode(local.lambda_role_arns)}
         },
         "Action": [
             "s3:GetObject",
@@ -140,17 +145,21 @@ resource "aws_s3_bucket_policy" "artifacts" {
   POLICY
 }
 
+locals {
+  lambda_function_arns = compact([
+    module.ldap_query_lambda.function_arn,
+    module.slack_notifier.function_arn,
+    module.dynamodb_cleanup.function_arn
+  ])
+}
+
 # step function
 data "aws_iam_policy_document" "sfn" {
   statement {
     actions = [
       "lambda:InvokeFunction"
     ]
-    resources = [
-      module.ldap_query_lambda.function_arn,
-      module.slack_notifier.function_arn,
-      module.dynamodb_cleanup.function_arn
-    ]
+    resources = local.lambda_function_arns
   }
 }
 
@@ -184,6 +193,15 @@ resource "aws_iam_policy_attachment" "sfn" {
 
 resource "aws_sfn_activity" "account_deactivation_approval" {
   name = "account_deactivation_approval"
+}
+
+locals {
+  dynamodb_maintenance_sfn_content = var.create_dynamodb_cleanup ? templatefile(
+    "${path.module}/templates/dynamodb_sfn.tpl",
+    {
+      function_arn = module.dynamodb_cleanup.function_arn
+  }) : ""
+  action_after_ldap_user_cleanup = var.create_dynamodb_cleanup ? "dynamodb_cleanup" : "send_status_to_slack"
 }
 
 resource "aws_sfn_state_machine" "ldap_maintenance" {
@@ -287,28 +305,10 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
         "action": "disable"
       }
     },
-    "Next": "dynamodb_cleanup"
+    "Next": "${local.action_after_ldap_user_cleanup}"
     },
 
-    "dynamodb_cleanup": {
-    "Type": "Task",
-    "Resource": "arn:aws:states:::lambda:invoke",
-    "Catch": [
-      {
-        "ErrorEquals": [ "States.TaskFailed" ],
-        "Next": "send_error_to_slack"
-      }
-    ],
-    "Parameters": {
-      "FunctionName": "${module.dynamodb_cleanup.function_arn}",
-      "Payload": {
-        "slack_message_key.$": "$.Payload.slack_message_key",
-        "ldap_scan_results.$": "$.Payload.ldap_scan_results",
-        "action": "remove"
-      }
-    },
-    "Next": "send_status_to_slack"
-    },
+    ${local.dynamodb_maintenance_sfn_content}
 
     "send_status_to_slack": {
       "Type": "Task",

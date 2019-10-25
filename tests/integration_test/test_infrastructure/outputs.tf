@@ -19,9 +19,9 @@ output "vpc_id" {
 }
 
 output "dynamodb_table_name" {
-  value = aws_dynamodb_table.test_table.name
+  value = join("", aws_dynamodb_table.test_table.*.name)
 }
 
 output "dynamodb_table_arn" {
-  value = aws_dynamodb_table.test_table.arn
+  value = join("", aws_dynamodb_table.test_table.*.arn)
 }

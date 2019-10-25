@@ -7,6 +7,7 @@ Lambda function to facilitate removing disabled users' email(s) from a target dy
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
+| create\_function | Controls whether to create the dynamodb clean function | string | `"true"` | no |
 | dynamodb\_table\_arn | ARN of the dynamodb table to perform maintenance actions against | string | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
