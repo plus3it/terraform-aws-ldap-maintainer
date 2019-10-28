@@ -54,6 +54,7 @@ This project deploys a collection of lambda functions, an api endpoint, and a st
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| additional\_cleanup\_tasks | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | string | `""` | no |
 | create\_dynamodb\_cleanup | Controls wether to create the dynamodb cleanup resources | bool | `"true"` | no |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb to take actions against | string | n/a | yes |

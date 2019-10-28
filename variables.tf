@@ -84,3 +84,9 @@ variable "create_dynamodb_cleanup" {
   default     = true
   description = "Controls wether to create the dynamodb cleanup resources"
 }
+
+variable "additional_cleanup_tasks" {
+  type        = string
+  default     = ""
+  description = "(Optional) List of step function tasks to execute in parallel once the cleanup action has been approved."
+}

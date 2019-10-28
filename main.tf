@@ -197,11 +197,15 @@ resource "aws_sfn_activity" "account_deactivation_approval" {
 
 locals {
   dynamodb_maintenance_sfn_content = var.create_dynamodb_cleanup ? templatefile(
-    "${path.module}/templates/dynamodb_sfn.tpl",
+    "${path.module}/templates/dynamodb_cleanup_task.tpl",
     {
       function_arn = module.dynamodb_cleanup.function_arn
   }) : ""
-  action_after_ldap_user_cleanup = var.create_dynamodb_cleanup ? "dynamodb_cleanup" : "send_status_to_slack"
+  # list of parallel states to run as part of the ldap object clean up
+  # **Note: this list must start with a comma
+  additional_cleanup_tasks_internal = var.create_dynamodb_cleanup ? ",${local.dynamodb_maintenance_sfn_content}" : ""
+  additional_cleanup_tasks          = var.additional_cleanup_tasks == "" ? local.additional_cleanup_tasks_internal : "${local.additional_cleanup_tasks_internal}, ${var.additional_cleanup_tasks}"
+
 }
 
 resource "aws_sfn_state_machine" "ldap_maintenance" {
@@ -285,32 +289,42 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
         "message_to_slack": "The LDAP operation has been approved. I'll notify you when the operation is complete."
       }
     },
-    "Next": "run_ldap_query_again"
+    "Next": "cleanup_tasks"
     },
 
-    "run_ldap_query_again": {
-    "Type": "Task",
-    "Resource": "arn:aws:states:::lambda:invoke",
-    "Catch": [
-      {
-        "ErrorEquals": [ "States.TaskFailed" ],
-        "Next": "send_error_to_slack"
-      }
-    ],
-    "Parameters": {
-      "FunctionName": "${module.ldap_query_lambda.function_arn}",
-      "Payload": {
-        "slack_message_key.$": "$.Payload.slack_message_key",
-        "ldap_scan_results.$": "$.Payload.ldap_scan_results",
-        "action": "disable"
-      }
-    },
-    "Next": "${local.action_after_ldap_user_cleanup}"
+    "cleanup_tasks": {
+      "Type": "Parallel",
+      "Next": "send_success_status_to_slack",
+      "Catch": [
+          {
+            "ErrorEquals": [ "States.TaskFailed" ],
+            "Next": "send_error_to_slack"
+          }
+        ],
+      "Branches": [
+        {
+          "StartAt": "run_ldap_query_again",
+          "States": {
+            "run_ldap_query_again": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "${module.ldap_query_lambda.function_arn}",
+                "Payload": {
+                  "slack_message_key.$": "$.Payload.slack_message_key",
+                  "ldap_scan_results.$": "$.Payload.ldap_scan_results",
+                  "action": "disable"
+                }
+              },
+              "End": true
+            }
+          }
+        }
+        ${local.additional_cleanup_tasks}
+      ]
     },
 
-    ${local.dynamodb_maintenance_sfn_content}
-
-    "send_status_to_slack": {
+    "send_success_status_to_slack": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
