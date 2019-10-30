@@ -30,12 +30,12 @@ variable "vpc_id" {
 }
 
 variable "slack_api_token" {
-  description = "API token used by the slack client"
+  description = "API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token"
   type        = string
 }
 
 variable "slack_signing_secret" {
-  description = "The slack application's signing secret"
+  description = "The slack application's signing secret. Located under the slack application Settings > Basic Information"
   type        = string
 }
 

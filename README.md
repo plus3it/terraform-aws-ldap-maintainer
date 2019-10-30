@@ -64,9 +64,9 @@ This project deploys a collection of lambda functions, an api endpoint, and a st
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | string | `"cron(0 8 1 * ? *)"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |
-| slack\_api\_token | API token used by the slack client | string | n/a | yes |
+| slack\_api\_token | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | string | n/a | yes |
 | slack\_channel\_id | Channel that the slack notifier will post to | string | n/a | yes |
-| slack\_signing\_secret | The slack application's signing secret | string | n/a | yes |
+| slack\_signing\_secret | The slack application's signing secret. Located under the slack application Settings > Basic Information | string | n/a | yes |
 | svc\_user\_dn | Distinguished name of the LDAP Maintenance service account used to manage simpleAD | string | n/a | yes |
 | svc\_user\_pwd\_ssm\_key | SSM parameter key that contains the LDAP Maintenance service account password | string | n/a | yes |
 | tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |
