@@ -4,11 +4,6 @@ resource "random_string" "this" {
   upper   = false
 }
 
-resource "aws_sqs_queue" "slack_listener" {
-  name = "${var.project_name}-async-queue-${random_string.this.result}"
-  tags = var.tags
-}
-
 data "aws_s3_bucket" "artifacts" {
   bucket = var.artifacts_bucket_name
 }

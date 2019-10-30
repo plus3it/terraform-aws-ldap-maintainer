@@ -27,11 +27,3 @@ output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = module.lambda.role_name
 }
-
-output "sqs_queue_arn" {
-  value = aws_sqs_queue.slack_listener.arn
-}
-
-output "sqs_queue_name" {
-  value = aws_sqs_queue.slack_listener.name
-}

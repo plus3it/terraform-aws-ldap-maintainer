@@ -26,6 +26,4 @@ Lambda function that responds to slack events from a SQS queue
 | function\_qualified\_arn | The qualified ARN of the Lambda function |
 | role\_arn | The ARN of the IAM role created for the Lambda function |
 | role\_name | The name of the IAM role created for the Lambda function |
-| sqs\_queue\_arn |  |
-| sqs\_queue\_name |  |
 
