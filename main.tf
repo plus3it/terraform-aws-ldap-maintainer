@@ -4,8 +4,8 @@
 module "api_gateway" {
   source = "./modules/api_gateway"
 
-  project_name                        = var.project_name
-  slack_event_listener_sqs_queue_name = module.slack_event_listener.sqs_queue_name
+  project_name      = var.project_name
+  async_lambda_name = module.slack_event_listener.function_name
 }
 
 module "slack_event_listener" {
@@ -330,8 +330,8 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
       "Parameters": {
             "FunctionName": "${module.slack_notifier.function_name}",
             "Payload":{
-              "slack_message_key.$": "$.Payload.slack_message_key",
-              "ldap_scan_results.$": "$.Payload.ldap_scan_results",
+              "slack_message_key.$": "$[0].Payload.slack_message_key",
+              "ldap_scan_results.$": "$[0].Payload.ldap_scan_results",
               "message_to_slack": "LDAP operations are complete"
             }
       },

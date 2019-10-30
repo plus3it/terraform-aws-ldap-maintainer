@@ -273,9 +273,13 @@ def create_json_doc(content):
 
 def get_html_table_headers(user_list):
     table_headers = []
-    for key in user_list['120'][0].keys():
-        table_headers.append(key)
-    return table_headers
+    try:
+        for key in user_list['120'][0].keys():
+            table_headers.append(key)
+        return table_headers
+    except IndexError:
+        # return the empty list of there are no accounts to be disabled
+        return table_headers
 
 
 def render_template(template="html_table.html", **kwargs):

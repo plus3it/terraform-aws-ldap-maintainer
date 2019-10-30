@@ -6,8 +6,8 @@ terraform-aws-ldap-maintainer API Gateway module
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| async\_lambda\_name | Name of the lambda function that API gateway will invoke asynchronously | string | n/a | yes |
 | project\_name | (Optional) Name of the project | string | `"ldap-maintainer"` | no |
-| slack\_event\_listener\_sqs\_queue\_name | Name of the sqs queue where slack events will be published | string | n/a | yes |
 | tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |
 
 ## Outputs

@@ -10,8 +10,7 @@ variable "project_name" {
   type        = string
 }
 
-variable "slack_event_listener_sqs_queue_name" {
+variable "async_lambda_name" {
   type        = string
-  description = "Name of the sqs queue where slack events will be published"
+  description = "Name of the lambda function that API gateway will invoke asynchronously"
 }
-
