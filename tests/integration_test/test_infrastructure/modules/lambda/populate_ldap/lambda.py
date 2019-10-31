@@ -1,4 +1,5 @@
 import collections
+import fnmatch
 import json
 import logging
 import os
@@ -204,6 +205,13 @@ def byte_encode_user_map(input_map):
     return input_map
 
 
+def is_special(user_name):
+    filter_prefixes = json.loads(os.environ['FILTER_PREFIXES'])
+    for prefix in filter_prefixes:
+        if fnmatch.fnmatch(user_name, f"{prefix}*"):
+            return True
+
+
 def generate_test_user_objects(test_users):
     """
     Creates a list of dictionaries with a user's distingushed name (dn)
@@ -238,18 +246,26 @@ def generate_test_user_objects(test_users):
     """
     user_list = []
     for user in test_users:
-        name = user.split()
+        name = user
+        email = f"{user}@email.com"
+        first_name = user
+        sam_account_name = user
+        if not is_special(user):
+            name = user.split()
+            email = f"{name[0]}.{name[1]}@email.com"
+            first_name = name[0]
+            sam_account_name = f"{name[0]}.{name[1]}"
         user_obj = {}
         user_obj['dn'] = f"cn={user},CN=Users,{DOMAIN_BASE}"
         user_obj['user'] = byte_encode_user_map({
                 "cn": [user],
                 "displayName": [f"Test account {user}"],
                 "description": ["Test account"],
-                "givenName": [name[0]],
+                "givenName": [first_name],
                 "lastLogoff": ['0'],
                 "lastLogon": ['0'],
                 "logonCount": ['0'],
-                "mail": [f"{name[0]}.{name[1]}@email.com"],
+                "mail": [email],
                 "name": [f"TEST {user}"],
                 "objectClass": [
                     'top',
@@ -257,7 +273,7 @@ def generate_test_user_objects(test_users):
                     'organizationalPerson',
                     'user'
                 ],
-                "sAMAccountName": [f"{name[0]}.{name[1]}"],
+                "sAMAccountName": [sam_account_name],
                 # Normal Account, require user to change pwd on next login
                 "userAccountControl": ['512']
             })

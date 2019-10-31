@@ -46,3 +46,9 @@ variable "test_users" {
   type        = list(string)
   description = "List of test users in Firstname Lastname format"
 }
+
+variable "filter_prefixes" {
+  default     = []
+  description = "List of user name prefixes to filter out of the user search results"
+  type        = list(string)
+}

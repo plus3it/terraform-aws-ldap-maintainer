@@ -51,12 +51,13 @@ module "lambda" {
 
   environment = {
     variables = {
-      LDAPS_URL    = var.ldaps_url
-      DOMAIN_BASE  = var.domain_base_dn
-      SVC_USER_DN  = var.svc_user_dn
-      SVC_USER_PWD = var.svc_user_pwd
-      LOG_LEVEL    = var.log_level
-      TEST_USERS   = jsonencode(var.test_users)
+      LDAPS_URL       = var.ldaps_url
+      DOMAIN_BASE     = var.domain_base_dn
+      SVC_USER_DN     = var.svc_user_dn
+      SVC_USER_PWD    = var.svc_user_pwd
+      LOG_LEVEL       = var.log_level
+      TEST_USERS      = jsonencode(var.test_users)
+      FILTER_PREFIXES = jsonencode(var.filter_prefixes)
     }
   }
 

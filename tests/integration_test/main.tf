@@ -10,6 +10,8 @@ module "test_infrastructure" {
   key_pair_name                = var.key_pair_name
   additional_ips_allow_inbound = var.additional_ips_allow_inbound
   instance_profile             = var.instance_profile
+  filter_prefixes              = var.filter_prefixes
+  additional_test_users        = var.additional_test_users
 }
 
 module "ldap_maintainer" {
@@ -26,4 +28,5 @@ module "ldap_maintainer" {
   slack_channel_id        = var.slack_channel_id
   slack_api_token         = var.slack_api_token
   slack_signing_secret    = var.slack_signing_secret
+  filter_prefixes         = var.filter_prefixes
 }

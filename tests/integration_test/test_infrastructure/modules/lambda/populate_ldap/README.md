@@ -7,6 +7,7 @@ Lambda function used to populate a target SimpleAD deployment with test users fo
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
+| filter\_prefixes | List of user name prefixes to filter out of the user search results | list(string) | `<list>` | no |
 | ldaps\_url | LDAPS URL for the target domain | string | n/a | yes |
 | log\_level | Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |

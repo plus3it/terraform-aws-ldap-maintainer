@@ -4,6 +4,7 @@ Requires the credentials of a user with domain admin privileges
 """
 import boto3
 import collections
+import fnmatch
 import json
 import logging
 import os
@@ -140,6 +141,30 @@ class LdapMaintainer:
         return self.byte_decode_search_results(
             self.search("(&(objectCategory=person)(objectClass=user))"))
 
+    @staticmethod
+    def is_special(sam_name, uac):
+        # list of three letter prefixes to filter out of results
+        filter_prefixes = json.loads(os.environ['FILTER_PREFIXES'])
+        # list of accounts not to touch
+        hands_off = json.loads(os.environ['HANDS_OFF_ACCOUNTS'])
+        disabled_codes = [
+            "514",     # Disabled Account
+            "65536",   # DONT_EXPIRE_PASSWORD
+            "66048",   # Enabled, Password Doesn’t Expire
+            "66050",   # Disabled, Password Doesn’t Expire
+            "66080",   # Disabled, Password Doesn’t Expire & Not Required
+            "262658",  # Disabled, Smartcard Required
+            "262690"   # Disabled, Smartcard Required, Password Not Required
+        ]
+        for prefix in filter_prefixes:
+            if fnmatch.fnmatch(sam_name, f"{prefix}*"):
+                return True
+        for account in hands_off:
+            if fnmatch.fnmatch(sam_name, f"{account}*"):
+                return True
+        if uac in disabled_codes:
+            return True
+
     def get_users(self):
         """
         Returns a list of active users.
@@ -152,28 +177,12 @@ class LdapMaintainer:
 
         # code reference:
         # https://jackstromberg.com/2013/01/useraccountcontrol-attributeflag-values/
-        disabled_codes = [
-            "514",     # Disabled Account
-            "65536",   # DONT_EXPIRE_PASSWORD
-            "66048",   # Enabled, Password Doesn’t Expire
-            "66050",   # Disabled, Password Doesn’t Expire
-            "66080",   # Disabled, Password Doesn’t Expire & Not Required
-            "262658",  # Disabled, Smartcard Required
-            "262690"   # Disabled, Smartcard Required, Password Not Required
-        ]
-        # list of three letter prefixes to filter out of results
-        filter_prefixes = json.loads(os.environ['FILTER_PREFIXES'])
-        # list of accounts not to touch
-        hands_off = json.loads(os.environ['HANDS_OFF_ACCOUNTS'])
+
         for user_obj in self.get_all_users():
             try:
                 uac = user_obj['user']['userAccountControl'][0]
                 sam_name = user_obj['user']['sAMAccountName'][0]
-                if (
-                    uac not in disabled_codes and
-                    sam_name[:3] not in filter_prefixes and
-                    sam_name not in hands_off
-                ):
+                if not self.is_special(sam_name, uac):
                     non_svc_users.append(user_obj['user'])
             except TypeError:
                 continue

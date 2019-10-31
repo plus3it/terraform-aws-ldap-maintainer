@@ -63,3 +63,15 @@ variable "create_dynamodb_cleanup" {
   default     = true
   description = "Controls wether to create the dynamodb cleanup resources"
 }
+
+variable "filter_prefixes" {
+  default     = []
+  description = "List of user name prefixes to filter out of the user search results"
+  type        = list(string)
+}
+
+variable "additional_test_users" {
+  default     = []
+  description = "List of additional test users to create in the target SimpleAD instance"
+  type        = list(string)
+}
