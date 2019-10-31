@@ -32,12 +32,12 @@ jobs:
         - make terraform/lint
         - make docs/lint
     - stage: deploy
-      if: branch = master AND type = push AND repo = plus3it/terraform-aws-ldap-maintenance
+      if: branch = master AND type = push AND repo = plus3it/terraform-aws-ldap-maintainer
       before_script:
         - |
           PRIOR_VERSION=$(git describe --abbrev=0 --tags)
           RELEASE_VERSION=$(grep current_version $TRAVIS_BUILD_DIR/.bumpversion.cfg | sed 's/^.*= //' )
-          RELEASE_BODY="* [terraform-aws-ldap-maintenance v$RELEASE_VERSION CHANGELOG](https://github.com/plus3it/terraform-aws-ldap-maintenance/blob/$RELEASE_VERSION/CHANGELOG.md)"
+          RELEASE_BODY="* [terraform-aws-ldap-maintainer v$RELEASE_VERSION CHANGELOG](https://github.com/plus3it/terraform-aws-ldap-maintainer/blob/$RELEASE_VERSION/CHANGELOG.md)"
           export PRIOR_VERSION RELEASE_VERSION RELEASE_BODY
       script: skip
       before_deploy:
@@ -54,5 +54,5 @@ jobs:
         draft: false
         on:
           branch: master
-          repo: plus3it/terraform-aws-ldap-maintenance
+          repo: plus3it/terraform-aws-ldap-maintainer
           condition: '"$PRIOR_VERSION" != "$RELEASE_VERSION"'

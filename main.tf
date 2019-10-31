@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 module "api_gateway" {
   source = "./modules/api_gateway"
 
@@ -108,8 +105,6 @@ resource "aws_s3_bucket" "artifacts" {
       }
     }
   }
-
-
 }
 
 locals {
@@ -123,26 +118,26 @@ locals {
 
 resource "aws_s3_bucket_policy" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Id": "lambda_access",
-  "Statement": [
+  policy = <<-POLICY
     {
-        "Effect": "Allow",
-        "Principal": {
-            "AWS": ${jsonencode(local.lambda_role_arns)}
-        },
-        "Action": [
-            "s3:GetObject",
-            "s3:PutObject",
-            "s3:DeleteObject"
-        ],
-        "Resource": "${aws_s3_bucket.artifacts.arn}/*"
+      "Version": "2012-10-17",
+      "Id": "lambda_access",
+      "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ${jsonencode(local.lambda_role_arns)}
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": "${aws_s3_bucket.artifacts.arn}/*"
+        }
+      ]
     }
-  ]
-}
-  POLICY
+    POLICY
 }
 
 locals {
@@ -410,4 +405,3 @@ resource "aws_cloudwatch_event_target" "this" {
   input    = "{\"action\": \"query\"}"
   role_arn = aws_iam_role.cwe.arn
 }
->>>>>>> 2fab932... Module initialization

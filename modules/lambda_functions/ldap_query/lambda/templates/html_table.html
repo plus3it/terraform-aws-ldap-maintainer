@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+      .wrapper {
+        max-width: 1080px;
+        margin: auto;
+      }
+      .note {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        background: rgba(0,0,0,.05);
+        padding: 24px;
+        margin: 24px 0 78px;
+        min-height: 100px;
+    }
+    </style>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.0/material.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.material.min.css"/>
 
@@ -21,7 +39,8 @@
     </script>
 </head>
 <body>
-
+<div class="wrapper">
+<div class="note"><p></p></div>
 <table id="staleusers" class="mdl-data-table" width="100%">
         <thead>
             <tr>{% for key in user_list['120'][0] %}{% if key != "dn" %}
@@ -41,6 +60,6 @@
             </tr>
         </tfoot>
     </table>
-
+</div>
 </body>
 </html>

@@ -121,7 +121,7 @@ docs/lint: | tfdocs-awk/install guard/program/terraform-docs
 	@ echo "[$@] documentation linting complete!"
 
 terratest/install: | guard/program/go
-	cd tests && go mod init terraform-aws-ldap-maintenance/tests
+	cd tests && go mod init terraform-aws-ldap-maintainer/tests
 	cd tests && go build ./...
 	cd tests && go mod tidy
 
