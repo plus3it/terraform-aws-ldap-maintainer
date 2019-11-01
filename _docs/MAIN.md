@@ -13,7 +13,6 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 ## Submodules
 
 - [API Gateway](/modules/api_gateway): An API endpoint that responds asynchronously to slack events and triggers the Slack Listener lambda function
-- [DynamoDB Cleanup](/modules/lambda_functions/dynamodb_cleanup): Lambda function that facilitates removing disabled users' email(s) from a target DynamoDB table
 - [LDAP Query](/modules/lambda_functions/ldap_query): Lambda function used to perform actions against a target ldap database
 - [Slack Listener](/modules/lambda_functions/slack_listener): Lambda function that responds to slack events via an asynchronously executed lambda function
 - [Slack Notifier](/modules/lambda_functions/slack_notifier): Lambda function that sends status updates to slack and a target step function
