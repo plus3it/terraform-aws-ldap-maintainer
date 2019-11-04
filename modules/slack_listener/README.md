@@ -18,7 +18,7 @@ This function is intended for use with this project's API Gateway module. An API
 | log\_level | Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |
 | slack\_api\_token | API token used by the slack client | string | n/a | yes |
-| slack\_listener\_api\_endpoint\_arn |  | string | `""` | no |
+| slack\_listener\_api\_endpoint\_arn | ARN of the slack listener API endpoint | string | `""` | no |
 | slack\_signing\_secret | The slack application's signing secret | string | `""` | no |
 | step\_function\_arns | List of state machine ARNs that the api gateway is able to perform actions against | list(string) | n/a | yes |
 | tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |

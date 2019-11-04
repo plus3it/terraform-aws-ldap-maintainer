@@ -7,7 +7,7 @@ locals {
 }
 
 resource "aws_security_group" "this" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   name_prefix = "${var.project_name}-sg"
   vpc_id      = var.vpc_id
@@ -20,7 +20,7 @@ data "http" "ip" {
 }
 
 resource "aws_security_group_rule" "rdp" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   type        = "ingress"
   from_port   = 3389
@@ -32,7 +32,7 @@ resource "aws_security_group_rule" "rdp" {
 }
 
 resource "aws_security_group_rule" "out_all" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   type        = "egress"
   from_port   = 0
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "out_all" {
 # Windows instance
 
 data "aws_ami" "windows2016" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   most_recent = true
   owners      = ["amazon"]
@@ -63,7 +63,7 @@ data "aws_ami" "windows2016" {
 }
 
 resource "aws_instance" "win" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   ami                         = data.aws_ami.windows2016.*.id[count.index]
   instance_type               = var.instance_type
@@ -72,11 +72,11 @@ resource "aws_instance" "win" {
   subnet_id                   = var.instance_subnet
   associate_public_ip_address = true
   iam_instance_profile        = var.instance_profile
-  user_data                   = <<EOF
-<powershell>
-ADD-WindowsFeature RSAT-Role-Tools
-</powershell>
-EOF
+  user_data                   = <<-EOF
+    <powershell>
+    ADD-WindowsFeature RSAT-Role-Tools
+    </powershell>
+  EOF
 
   tags = merge(var.tags, map("Name", var.project_name))
 }
@@ -88,31 +88,31 @@ locals {
 }
 
 resource "aws_ssm_document" "domain_join" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   name          = local.ssm_document_name
   document_type = "Command"
 
-  content = <<DOC
-{
-        "schemaVersion": "1.0",
-        "description": "Configuration to join an instance to the ${var.project_name} domain",
-        "runtimeConfig": {
-          "aws:domainJoin": {
-              "properties": {
-                "directoryId": "${var.directoryId}",
-                "directoryName": "${var.directoryName}",
-                "directoryOU": "${var.directoryOU}",
-                "dnsIpAddresses": ${jsonencode(var.dnsIpAddresses)}
-              }
+  content = <<-DOC
+  {
+          "schemaVersion": "1.0",
+          "description": "Configuration to join an instance to the ${var.project_name} domain",
+          "runtimeConfig": {
+            "aws:domainJoin": {
+                "properties": {
+                  "directoryId": "${var.directoryId}",
+                  "directoryName": "${var.directoryName}",
+                  "directoryOU": "${var.directoryOU}",
+                  "dnsIpAddresses": ${jsonencode(var.dnsIpAddresses)}
+                }
+            }
           }
-        }
-}
-DOC
+  }
+  DOC
 }
 
 resource "aws_ssm_association" "this" {
-  count = "${var.create_windows_instance ? 1 : 0}"
+  count = var.create_windows_instance ? 1 : 0
 
   name = aws_ssm_document.domain_join.*.name[count.index]
 

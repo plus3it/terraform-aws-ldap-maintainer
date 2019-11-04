@@ -21,8 +21,7 @@ When provided an event with the `disable` action this function will:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| additional\_hands\_off\_accounts | List of accounts to prevent from ever disabling | list(string) | `<list>` | no |
-| additional\_off\_accounts |  | list | `<list>` | no |
+| additional\_hands\_off\_accounts | List of accounts that will never be disabled | list(string) | `<list>` | no |
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | filter\_prefixes | List of three letter user name prefixes to filter out of the user search results | list(string) | `<list>` | no |

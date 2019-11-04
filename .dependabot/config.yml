@@ -11,13 +11,13 @@ update_configs:
     update_schedule: "daily"
 
   - package_manager: "python"
-    directory: "/modules/lambda_functions/ldap_query"
+    directory: "/modules/ldap_query"
     update_schedule: "daily"
 
   - package_manager: "python"
-    directory: "/modules/lambda_functions/slack_notifier"
+    directory: "/modules/slack_notifier"
     update_schedule: "daily"
 
   - package_manager: "python"
-    directory: "/tests/integration_test/test_infrastructure/modules/lambda/populate_ldap"
+    directory: "/tests/integration_test/test_infrastructure/modules/populate_ldap"
     update_schedule: "daily"

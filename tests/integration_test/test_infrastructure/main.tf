@@ -226,7 +226,7 @@ locals {
 }
 
 module "populate_ldap" {
-  source = "./modules/lambda/populate_ldap"
+  source = "./modules/populate_ldap"
 
   ldaps_url       = "ldaps://${aws_lb.ldaps.dns_name}"
   domain_base_dn  = local.dn

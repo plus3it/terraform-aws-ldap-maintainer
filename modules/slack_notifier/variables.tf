@@ -48,7 +48,7 @@ variable "artifacts_bucket_name" {
 }
 
 variable "tags" {
+  default     = {}
   description = "Map of tags to assign to this module's resources"
   type        = map(string)
-  default     = {}
 }

@@ -11,6 +11,6 @@ variable "project_name" {
 }
 
 variable "async_lambda_name" {
-  type        = string
   description = "Name of the lambda function that API gateway will invoke asynchronously"
+  type        = string
 }

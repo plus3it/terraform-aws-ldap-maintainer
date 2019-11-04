@@ -41,11 +41,6 @@ variable "filter_prefixes" {
   type        = list(string)
 }
 
-variable "additional_off_accounts" {
-  default     = []
-  description = ""
-}
-
 variable "tags" {
   default     = {}
   description = "Map of tags to assign to this module's resources"
@@ -53,7 +48,7 @@ variable "tags" {
 }
 
 variable "additional_hands_off_accounts" {
-  description = "List of accounts to prevent from ever disabling"
+  description = "List of accounts that will never be disabled"
   type        = list(string)
   default     = []
 }

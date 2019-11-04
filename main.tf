@@ -6,7 +6,7 @@ module "api_gateway" {
 }
 
 module "slack_event_listener" {
-  source = "./modules/lambda_functions/slack_listener"
+  source = "./modules/slack_listener"
 
   project_name          = var.project_name
   artifacts_bucket_name = aws_s3_bucket.artifacts.id
@@ -25,7 +25,7 @@ locals {
 }
 
 module "ldap_query_lambda" {
-  source = "./modules/lambda_functions/ldap_query"
+  source = "./modules/ldap_query"
 
   project_name          = var.project_name
   artifacts_bucket_name = aws_s3_bucket.artifacts.id
@@ -40,7 +40,7 @@ module "ldap_query_lambda" {
 }
 
 module "slack_notifier" {
-  source = "./modules/lambda_functions/slack_notifier"
+  source = "./modules/slack_notifier"
 
   project_name          = var.project_name
   artifacts_bucket_name = aws_s3_bucket.artifacts.id
@@ -53,7 +53,7 @@ module "slack_notifier" {
 }
 
 module "dynamodb_cleanup" {
-  source = "./modules/lambda_functions/dynamodb_cleanup"
+  source = "./modules/dynamodb_cleanup"
 
   create_function       = var.create_dynamodb_cleanup
   project_name          = var.project_name

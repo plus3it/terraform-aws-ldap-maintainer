@@ -17,7 +17,7 @@ variable "log_level" {
 
 variable "slack_listener_api_endpoint_arn" {
   default     = ""
-  description = ""
+  description = "ARN of the slack listener API endpoint"
   type        = string
 }
 

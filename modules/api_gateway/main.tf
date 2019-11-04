@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "api_gw" {
 resource "aws_iam_policy" "api_gw" {
   name        = "${var.project_name}-api-gw"
   description = "Policy used by the Ldap Maintenance API Gateway"
-  policy      = "${data.aws_iam_policy_document.api_gw.json}"
+  policy      = data.aws_iam_policy_document.api_gw.json
 }
 
 resource "aws_iam_role" "api_gw" {
@@ -40,8 +40,8 @@ resource "aws_iam_role" "api_gw" {
 
 resource "aws_iam_policy_attachment" "api_gw" {
   name       = "ldap-maintainer-api-gw"
-  roles      = ["${aws_iam_role.api_gw.name}"]
-  policy_arn = "${aws_iam_policy.api_gw.arn}"
+  roles      = [aws_iam_role.api_gw.name]
+  policy_arn = aws_iam_policy.api_gw.arn
 }
 
 resource "aws_api_gateway_rest_api" "api" {
@@ -50,14 +50,14 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 resource "aws_api_gateway_resource" "event_listener" {
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  parent_id   = "${aws_api_gateway_rest_api.api.root_resource_id}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
   path_part   = "event-listener"
 }
 
 resource "aws_api_gateway_method" "event_listener_post" {
-  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = "${aws_api_gateway_resource.event_listener.id}"
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.event_listener.id
   http_method   = "POST"
   authorization = "NONE"
 }
@@ -66,34 +66,34 @@ locals {
   request_template = <<-TEMPLATE
     #set($allParams = $input.params())
     {
-    "body-json" : $input.json('$'),
-    "params" : {
-    #foreach($type in $allParams.keySet())
-    #set($params = $allParams.get($type))
-    "$type" : {
-        #foreach($paramName in $params.keySet())
-        "$paramName" : "$util.escapeJavaScript($params.get($paramName))"
-            #if($foreach.hasNext),#end
-        #end
-    }
-        #if($foreach.hasNext),#end
-    #end
-    },
-    "stage-variables" : {
-      #foreach($key in $stageVariables.keySet())
-      "$key" : "$util.escapeJavaScript($stageVariables.get($key))"
+      "body-json" : $input.json('$'),
+      "params" : {
+      #foreach($type in $allParams.keySet())
+      #set($params = $allParams.get($type))
+        "$type" : {
+          #foreach($paramName in $params.keySet())
+          "$paramName" : "$util.escapeJavaScript($params.get($paramName))"
+              #if($foreach.hasNext),#end
+          #end
+        }
           #if($foreach.hasNext),#end
       #end
-    }
+      },
+      "stage-variables" : {
+        #foreach($key in $stageVariables.keySet())
+        "$key" : "$util.escapeJavaScript($stageVariables.get($key))"
+          #if($foreach.hasNext),#end
+        #end
+      }
     }
     TEMPLATE
 }
 
 resource "aws_api_gateway_integration" "event_listener" {
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.event_listener.id}"
-  http_method = "${aws_api_gateway_method.event_listener_post.http_method}"
-  credentials = "${aws_iam_role.api_gw.arn}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.event_listener.id
+  http_method = aws_api_gateway_method.event_listener_post.http_method
+  credentials = aws_iam_role.api_gw.arn
   type        = "AWS"
 
   integration_http_method = "POST"
@@ -121,9 +121,9 @@ resource "aws_lambda_permission" "apigw_lambda" {
 }
 
 resource "aws_api_gateway_method_response" "event_listener_response_200" {
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.event_listener.id}"
-  http_method = "${aws_api_gateway_method.event_listener_post.http_method}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.event_listener.id
+  http_method = aws_api_gateway_method.event_listener_post.http_method
   response_models = {
     "application/json"                  = "Empty"
     "application/x-www-form-urlencoded" = "Empty"
@@ -135,10 +135,10 @@ resource "aws_api_gateway_integration_response" "event_listener_response_200" {
   depends_on = [
     "aws_api_gateway_integration.event_listener"
   ]
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.event_listener.id}"
-  http_method = "${aws_api_gateway_method.event_listener_post.http_method}"
-  status_code = "${aws_api_gateway_method_response.event_listener_response_200.status_code}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.event_listener.id
+  http_method = aws_api_gateway_method.event_listener_post.http_method
+  status_code = aws_api_gateway_method_response.event_listener_response_200.status_code
 }
 
 # deploy the api
@@ -146,6 +146,6 @@ resource "aws_api_gateway_deployment" "respond" {
   depends_on = [
     "aws_api_gateway_integration.event_listener"
   ]
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = "respond"
 }
