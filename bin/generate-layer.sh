@@ -70,14 +70,14 @@ create_layers() {
   for dir in "${directories[@]}"
   do
     cd "${dir}" || ( echo "Unable to navigate to ${dir}"; exit 1)
-    lambda_pacakge="/$(pwd)/lambda-package"
-    layer_path="$lambda_pacakge/python/lib/$PYTHON_VERSION/site-packages/"
+    lambda_package="/$(pwd)/lambda-package"
+    layer_path="$lambda_package/python/lib/$PYTHON_VERSION/site-packages/"
     mkdir -p "$layer_path" >/dev/null 2>&1 || ( echo "Unable to create $layer_path"; exit 1)
     pip3 install -r requirements.txt -t "$layer_path" >/dev/null 2>&1 || (echo "Encountered error installing python dependency"; exit 1)
     pushd lambda-package/ >/dev/null 2>&1 || ( echo "Unable to navigate to lambda-package/"; exit 1)
     zip -r ../lambda_layer_payload.zip python/* -x "setuptools*/*" "pkg_resources/*" "easy_install*" >/dev/null 2>&1
     popd >/dev/null 2>&1 || ( echo "Unable to return to source directory"; exit 1)
-    rm -rf "$lambda_pacakge"
+    rm -rf "$lambda_package"
     echo "Generated layer for: $(basename "${dir}")"
   done
 }

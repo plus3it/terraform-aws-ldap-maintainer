@@ -11,6 +11,7 @@ This function's sole purpose is to format the results of the [LDAP Query](/modul
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
+| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | filter\_prefixes | (Optional) List of three letter user name prefixes to filter out of the user search results | list(string) | `<list>` | no |
 | invoke\_base\_url | Base URL of the api gateway endpoint to pass to slack for approve/deny actions | string | n/a | yes |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |

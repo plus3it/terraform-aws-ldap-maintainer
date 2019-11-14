@@ -36,3 +36,9 @@ variable "create_function" {
   description = "Controls whether to create the dynamodb clean function"
   type        = bool
 }
+
+variable "resource_name_suffix" {
+  default     = ""
+  description = "Suffix to append this module's resource names"
+  type        = string
+}

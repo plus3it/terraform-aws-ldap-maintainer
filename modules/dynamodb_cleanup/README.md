@@ -12,6 +12,7 @@ Lambda function to facilitate removing disabled users' email(s) from a target dy
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |
+| resource\_name\_suffix | Suffix to append this module's resource names | string | `""` | no |
 | tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |
 
 ## Outputs

@@ -90,3 +90,9 @@ variable "additional_cleanup_tasks" {
   default     = ""
   description = "(Optional) List of step function tasks to execute in parallel once the cleanup action has been approved."
 }
+
+variable "days_since_pwdlastset" {
+  description = "Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object."
+  type        = number
+  default     = 120
+}

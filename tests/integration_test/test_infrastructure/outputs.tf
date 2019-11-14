@@ -25,3 +25,7 @@ output "dynamodb_table_name" {
 output "dynamodb_table_arn" {
   value = join("", aws_dynamodb_table.test_table.*.arn)
 }
+
+output "domain_member_public_ip" {
+  value = module.win_ad_mgmt.public_ip
+}

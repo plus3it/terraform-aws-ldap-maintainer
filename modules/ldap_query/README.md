@@ -23,6 +23,7 @@ When provided an event with the `disable` action this function will:
 |------|-------------|:----:|:-----:|:-----:|
 | additional\_hands\_off\_accounts | List of accounts that will never be disabled | list(string) | `<list>` | no |
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
+| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | filter\_prefixes | List of three letter user name prefixes to filter out of the user search results | list(string) | `<list>` | no |
 | ldaps\_url | LDAPS URL of the target domain | string | n/a | yes |

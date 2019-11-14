@@ -16,12 +16,12 @@ DEFAULT_LOG_LEVEL = logging.DEBUG
 LOG_LEVELS = collections.defaultdict(
     lambda: DEFAULT_LOG_LEVEL,
     {
-        'critical': logging.CRITICAL,
-        'error': logging.ERROR,
-        'warning': logging.WARNING,
-        'info': logging.INFO,
-        'debug': logging.DEBUG
-    }
+        "critical": logging.CRITICAL,
+        "error": logging.ERROR,
+        "warning": logging.WARNING,
+        "info": logging.INFO,
+        "debug": logging.DEBUG,
+    },
 )
 
 # Lambda initializes a root logger that needs to be removed in order to set a
@@ -33,24 +33,24 @@ if root.handlers:
 
 log_file_name = ""
 if not os.environ.get("AWS_EXECUTION_ENV"):
-    log_file_name = 'ldap_maintainer.log'
+    log_file_name = "ldap_maintainer.log"
 
 logging.basicConfig(
     filename=log_file_name,
-    format='%(asctime)s.%(msecs)03dZ [%(name)s][%(levelname)-5s]: %(message)s',
-    datefmt='%Y-%m-%dT%H:%M:%S',
-    level=LOG_LEVELS[os.environ.get('LOG_LEVEL', '').lower()])
+    format="%(asctime)s.%(msecs)03dZ [%(name)s][%(levelname)-5s]: %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+    level=LOG_LEVELS[os.environ.get("LOG_LEVEL", "").lower()],
+)
 log = logging.getLogger(__name__)
 
 
-LDAPS_URL = os.environ['LDAPS_URL']
-DOMAIN_BASE = os.environ['DOMAIN_BASE']
-SVC_USER_DN = os.environ['SVC_USER_DN']
-SVC_USER_PWD = os.environ['SVC_USER_PWD']
+LDAPS_URL = os.environ["LDAPS_URL"]
+DOMAIN_BASE = os.environ["DOMAIN_BASE"]
+SVC_USER_DN = os.environ["SVC_USER_DN"]
+SVC_USER_PWD = os.environ["SVC_USER_PWD"]
 
 
 class LdapMaintainer:
-
     def __init__(self):
         self.connection = self.connect()
 
@@ -72,11 +72,7 @@ class LdapMaintainer:
         log.debug("starting search with {}".format(filter_string))
         ldap_async = ldap.asyncsearch.List(self.connection)
         search_root = DOMAIN_BASE
-        ldap_async.startSearch(
-            search_root,
-            ldap.SCOPE_SUBTREE,
-            filter_string
-        )
+        ldap_async.startSearch(search_root, ldap.SCOPE_SUBTREE, filter_string)
 
         try:
             partial = ldap_async.processResults()
@@ -121,8 +117,7 @@ class LdapMaintainer:
                     attribute_list = user[1][1][attribute]
                     for i in range(len(attribute_list)):
                         try:
-                            attribute_list[i] = (
-                                attribute_list[i].decode('utf-8'))
+                            attribute_list[i] = attribute_list[i].decode("utf-8")
                         except UnicodeDecodeError:
                             # ignore the user's GUID and SID
                             attribute_list[i] = "ignored"
@@ -131,23 +126,22 @@ class LdapMaintainer:
                     # some elements are already strings so
                     # just continue past them
                     continue
-            user_obj['dn'] = user[1][0]
-            user_obj['user'] = user[1][1]
+            user_obj["dn"] = user[1][0]
+            user_obj["user"] = user[1][1]
             users.append(user_obj)
         return users
 
     def get_all_users(self):
         """Search LDAP and return all user objects."""
         return self.byte_decode_search_results(
-            self.search("(&(objectCategory=person)(objectClass=user))"))
+            self.search("(&(objectCategory=person)(objectClass=user))")
+        )
 
     def add_users(self, user_list):
         con = self.connect()
         for user_obj in user_list:
             try:
-                con.add_s(
-                    user_obj['dn'],
-                    ldap.modlist.addModlist(user_obj['user']))
+                con.add_s(user_obj["dn"], ldap.modlist.addModlist(user_obj["user"]))
             except ldap.ALREADY_EXISTS:
                 continue
 
@@ -180,18 +174,12 @@ class LdapMaintainer:
         # get a random list of 5 users and disable them
         random_list = random.sample(user_list, 5)
         for user_obj in random_list:
-            disable_user = [(
-                ldap.MOD_REPLACE,
-                'userAccountControl',
-                [b'66050'])]
-            update_description = [(
-                ldap.MOD_REPLACE,
-                'description',
-                [d.encode('utf-8')])]
-            self.ldap_retry(
-                lambda: con.modify_s(user_obj['dn'], disable_user))
-            self.ldap_retry(
-                lambda: con.modify_s(user_obj['dn'], update_description))
+            disable_user = [(ldap.MOD_REPLACE, "userAccountControl", [b"66050"])]
+            update_description = [
+                (ldap.MOD_REPLACE, "description", [d.encode("utf-8")])
+            ]
+            self.ldap_retry(lambda: con.modify_s(user_obj["dn"], disable_user))
+            self.ldap_retry(lambda: con.modify_s(user_obj["dn"], update_description))
 
 
 def byte_encode_user_map(input_map):
@@ -201,12 +189,12 @@ def byte_encode_user_map(input_map):
     for element in input_map:
         element_list = input_map[element]
         for i in range(len(element_list)):
-            element_list[i] = element_list[i].encode('utf-8')
+            element_list[i] = element_list[i].encode("utf-8")
     return input_map
 
 
 def is_special(user_name):
-    filter_prefixes = json.loads(os.environ['FILTER_PREFIXES'])
+    filter_prefixes = json.loads(os.environ["FILTER_PREFIXES"])
     for prefix in filter_prefixes:
         if fnmatch.fnmatch(user_name, f"{prefix}*"):
             return True
@@ -256,34 +244,31 @@ def generate_test_user_objects(test_users):
             first_name = name[0]
             sam_account_name = f"{name[0]}.{name[1]}"
         user_obj = {}
-        user_obj['dn'] = f"cn={user},CN=Users,{DOMAIN_BASE}"
-        user_obj['user'] = byte_encode_user_map({
+        user_obj["dn"] = f"cn={user},CN=Users,{DOMAIN_BASE}"
+        user_obj["user"] = byte_encode_user_map(
+            {
                 "cn": [user],
                 "displayName": [f"Test account {user}"],
                 "description": ["Test account"],
                 "givenName": [first_name],
-                "lastLogoff": ['0'],
-                "lastLogon": ['0'],
-                "logonCount": ['0'],
+                "lastLogoff": ["0"],
+                "lastLogon": ["0"],
+                "logonCount": ["0"],
                 "mail": [email],
                 "name": [f"TEST {user}"],
-                "objectClass": [
-                    'top',
-                    'person',
-                    'organizationalPerson',
-                    'user'
-                ],
+                "objectClass": ["top", "person", "organizationalPerson", "user"],
                 "sAMAccountName": [sam_account_name],
                 # Normal Account, require user to change pwd on next login
-                "userAccountControl": ['512']
-            })
+                "userAccountControl": ["512"],
+            }
+        )
         user_list.append(user_obj)
     return user_list
 
 
 def handler(event, context):
     # http://listofrandomnames.com/index.cfm
-    test_users = json.loads(os.environ['TEST_USERS'])
+    test_users = json.loads(os.environ["TEST_USERS"])
     users = generate_test_user_objects(test_users)
     ldap_maint = LdapMaintainer()
     ldap_maint.add_users(users)

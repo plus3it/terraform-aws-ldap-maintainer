@@ -1,11 +1,3 @@
-resource "random_string" "this" {
-  count = var.create_function ? 1 : 0
-
-  length  = 8
-  special = false
-  upper   = false
-}
-
 data "aws_s3_bucket" "artifacts" {
   count = var.create_function ? 1 : 0
 
@@ -40,7 +32,7 @@ data "aws_iam_policy_document" "lambda" {
       "s3:List*",
       "s3:PutObject"
     ]
-    resources = [data.aws_s3_bucket.artifacts[count.index].arn]
+    resources = [data.aws_s3_bucket.artifacts[0].arn]
   }
 }
 
@@ -49,7 +41,7 @@ module "lambda" {
 
   create_resources = var.create_function
 
-  function_name = "${var.project_name}-db-removal-${join("", random_string.this.*.result)}"
+  function_name = "${var.project_name}-db-removal-${var.resource_name_suffix}"
   description   = "Removes references to disabled LDAP users from a target dynamo db table."
   handler       = "lambda.handler"
   runtime       = "python3.7"

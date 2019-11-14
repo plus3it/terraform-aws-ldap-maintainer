@@ -91,14 +91,15 @@ module "lambda" {
 
   environment = {
     variables = {
-      LDAPS_URL          = var.ldaps_url
-      DOMAIN_BASE        = var.domain_base_dn
-      SVC_USER_DN        = var.svc_user_dn
-      FILTER_PREFIXES    = jsonencode(var.filter_prefixes)
-      SSM_KEY            = var.svc_user_pwd_ssm_key
-      LOG_LEVEL          = var.log_level
-      ARTIFACTS_BUCKET   = var.artifacts_bucket_name
-      HANDS_OFF_ACCOUNTS = jsonencode(local.hands_off_accounts)
+      LDAPS_URL             = var.ldaps_url
+      DOMAIN_BASE           = var.domain_base_dn
+      SVC_USER_DN           = var.svc_user_dn
+      FILTER_PREFIXES       = jsonencode(var.filter_prefixes)
+      SSM_KEY               = var.svc_user_pwd_ssm_key
+      LOG_LEVEL             = var.log_level
+      ARTIFACTS_BUCKET      = var.artifacts_bucket_name
+      HANDS_OFF_ACCOUNTS    = jsonencode(local.hands_off_accounts)
+      DAYS_SINCE_PWDLASTSET = var.days_since_pwdlastset
     }
   }
 

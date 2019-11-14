@@ -21,3 +21,10 @@ Deploys the ldap-maintenance project alongside a SimpleAD instance
 | slack\_signing\_secret | The slack application's signing secret | string | `""` | no |
 | target\_zone\_name | Name of the zone in which to create the simplead DNS record | string | n/a | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| domain\_member\_public\_ip | IP address of the windows instance used to manage AD. |
+| slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
+

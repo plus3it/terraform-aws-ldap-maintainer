@@ -52,3 +52,9 @@ variable "tags" {
   description = "Map of tags to assign to this module's resources"
   type        = map(string)
 }
+
+variable "days_since_pwdlastset" {
+  description = "Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object."
+  type        = number
+  default     = 120
+}

@@ -53,6 +53,7 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 |------|-------------|:----:|:-----:|:-----:|
 | additional\_cleanup\_tasks | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | string | `""` | no |
 | create\_dynamodb\_cleanup | Controls wether to create the dynamodb cleanup resources | bool | `"true"` | no |
+| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb to take actions against | string | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |

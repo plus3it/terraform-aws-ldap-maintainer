@@ -43,13 +43,14 @@ module "lambda" {
 
   environment = {
     variables = {
-      ARTIFACTS_BUCKET = var.artifacts_bucket_name
-      INVOKE_BASE_URL  = var.invoke_base_url
-      LOG_LEVEL        = var.log_level
-      SLACK_API_TOKEN  = var.slack_api_token
-      SLACK_CHANNEL_ID = var.slack_channel_id
-      SFN_ACTIVITY_ARN = var.sfn_activity_arn
-      TIMEZONE         = var.timezone
+      ARTIFACTS_BUCKET      = var.artifacts_bucket_name
+      INVOKE_BASE_URL       = var.invoke_base_url
+      LOG_LEVEL             = var.log_level
+      SLACK_API_TOKEN       = var.slack_api_token
+      SLACK_CHANNEL_ID      = var.slack_channel_id
+      SFN_ACTIVITY_ARN      = var.sfn_activity_arn
+      TIMEZONE              = var.timezone
+      DAYS_SINCE_PWDLASTSET = var.days_since_pwdlastset
     }
   }
 

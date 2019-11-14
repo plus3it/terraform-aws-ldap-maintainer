@@ -20,3 +20,9 @@ Deploys a domain joined windows instance with AD tools
 | tags | Map of strings to apply as tags to provisioned resources | map(string) | `<map>` | no |
 | vpc\_id | ID of the target VPC in which to provision the windows instance | string | n/a | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| public\_ip | Public IP address of the windows instance |
+

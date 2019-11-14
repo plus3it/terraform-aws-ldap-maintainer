@@ -57,3 +57,9 @@ variable "artifacts_bucket_name" {
   description = "Name of the artifacts bucket"
   type        = string
 }
+
+variable "days_since_pwdlastset" {
+  description = "Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object."
+  type        = number
+  default     = 120
+}

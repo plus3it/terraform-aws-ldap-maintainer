@@ -20,10 +20,6 @@ module "slack_event_listener" {
   log_level = var.log_level
 }
 
-locals {
-  svc_user_dn = "CN=${var.svc_user_dn},CN=Users,${var.domain_base_dn}"
-}
-
 module "ldap_query_lambda" {
   source = "./modules/ldap_query"
 
@@ -35,6 +31,7 @@ module "ldap_query_lambda" {
   svc_user_dn           = var.svc_user_dn
   svc_user_pwd_ssm_key  = var.svc_user_pwd_ssm_key
   vpc_id                = var.vpc_id
+  days_since_pwdlastset = var.days_since_pwdlastset
 
   log_level = var.log_level
 }
@@ -48,6 +45,7 @@ module "slack_notifier" {
   slack_api_token       = var.slack_api_token
   sfn_activity_arn      = aws_sfn_activity.account_deactivation_approval.id
   invoke_base_url       = module.api_gateway.invoke_url
+  days_since_pwdlastset = var.days_since_pwdlastset
 
   log_level = var.log_level
 }
