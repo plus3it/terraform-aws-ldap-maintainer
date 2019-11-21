@@ -56,6 +56,7 @@ class LdapMaintainer:
         svc_user_dn,
         svc_user_pwd,
         days_since_pwdlastset,
+        filter_patterns,
         users_to_disable=[],
     ):
         """Initialize"""
@@ -66,6 +67,7 @@ class LdapMaintainer:
         self.days_since_pwdlastset = int(days_since_pwdlastset)
         self.connection = self.connect()
         self.users_to_disable = users_to_disable
+        self.filter_patterns = filter_patterns
 
     def connect(self):
         """Establish a connection to the LDAP server."""
@@ -206,10 +208,8 @@ class LdapMaintainer:
             users.append(user_obj)
         return users
 
-    @staticmethod
-    def is_special(sam_name, uac):
+    def is_special(self, sam_name, uac):
         # list of accounts not to touch
-        hands_off = json.loads(os.environ["HANDS_OFF_ACCOUNTS"])
         disabled_codes = [
             "514",  # Disabled Account
             "65536",  # DONT_EXPIRE_PASSWORD
@@ -219,11 +219,7 @@ class LdapMaintainer:
             "262658",  # Disabled, Smartcard Required
             "262690",  # Disabled, Smartcard Required, Password Not Required
         ]
-        for account in hands_off:
-            if fnmatch.fnmatch(sam_name, f"{account}*"):
-                return True
-        if uac in disabled_codes:
-            return True
+        return uac in disabled_codes or fnmatch.filter(self.filter_patterns, sam_name)
 
     @staticmethod
     def filetime_to_dt(ft):
@@ -433,6 +429,7 @@ def handler(event, context):
             "domain_base": os.environ["DOMAIN_BASE"],
             "svc_user_dn": os.environ["SVC_USER_DN"],
             "svc_user_pwd": svc_user_pwd,
+            "filter_patterns": json.loads(os.environ["HANDS_OFF_ACCOUNTS"]),
             "days_since_pwdlastset": os.environ["DAYS_SINCE_PWDLASTSET"],
         }
 
