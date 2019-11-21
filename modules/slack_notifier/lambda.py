@@ -28,9 +28,7 @@ if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
 
-log_file_name = ""
-if not os.environ.get("AWS_EXECUTION_ENV"):
-    log_file_name = "ldap_maintainer_slack.log"
+log_file_name = os.getenv("AWS_EXECUTION_ENV", "slack_notifier.log")
 
 logging.basicConfig(
     filename=log_file_name,
