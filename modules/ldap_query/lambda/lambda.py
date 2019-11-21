@@ -208,8 +208,6 @@ class LdapMaintainer:
 
     @staticmethod
     def is_special(sam_name, uac):
-        # list of three letter prefixes to filter out of results
-        filter_prefixes = json.loads(os.environ["FILTER_PREFIXES"])
         # list of accounts not to touch
         hands_off = json.loads(os.environ["HANDS_OFF_ACCOUNTS"])
         disabled_codes = [
@@ -221,9 +219,6 @@ class LdapMaintainer:
             "262658",  # Disabled, Smartcard Required
             "262690",  # Disabled, Smartcard Required, Password Not Required
         ]
-        for prefix in filter_prefixes:
-            if fnmatch.fnmatch(sam_name, f"{prefix}*"):
-                return True
         for account in hands_off:
             if fnmatch.fnmatch(sam_name, f"{account}*"):
                 return True

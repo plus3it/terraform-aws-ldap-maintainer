@@ -50,9 +50,9 @@ variable "log_level" {
   type        = string
 }
 
-variable "filter_prefixes" {
+variable "hands_off_accounts" {
   default     = []
-  description = "(Optional) List of three letter user name prefixes to filter out of the user search results"
+  description = "(Optional) List of user names to filter out of the user search results"
   type        = list(string)
 }
 

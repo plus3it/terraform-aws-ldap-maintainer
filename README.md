@@ -57,7 +57,7 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb to take actions against | string | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
-| filter\_prefixes | (Optional) List of three letter user name prefixes to filter out of the user search results | list(string) | `<list>` | no |
+| hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | list(string) | `<list>` | no |
 | ldaps\_url | LDAPS URL of the target domain | string | n/a | yes |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | string | `"cron(0 8 1 * ? *)"` | no |

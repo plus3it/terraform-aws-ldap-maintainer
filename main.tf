@@ -23,15 +23,15 @@ module "slack_event_listener" {
 module "ldap_query_lambda" {
   source = "./modules/ldap_query"
 
-  project_name          = var.project_name
-  artifacts_bucket_name = aws_s3_bucket.artifacts.id
-  ldaps_url             = var.ldaps_url
-  domain_base_dn        = var.domain_base_dn
-  filter_prefixes       = var.filter_prefixes
-  svc_user_dn           = var.svc_user_dn
-  svc_user_pwd_ssm_key  = var.svc_user_pwd_ssm_key
-  vpc_id                = var.vpc_id
-  days_since_pwdlastset = var.days_since_pwdlastset
+  project_name                  = var.project_name
+  artifacts_bucket_name         = aws_s3_bucket.artifacts.id
+  ldaps_url                     = var.ldaps_url
+  domain_base_dn                = var.domain_base_dn
+  additional_hands_off_accounts = var.hands_off_accounts
+  svc_user_dn                   = var.svc_user_dn
+  svc_user_pwd_ssm_key          = var.svc_user_pwd_ssm_key
+  vpc_id                        = var.vpc_id
+  days_since_pwdlastset         = var.days_since_pwdlastset
 
   log_level = var.log_level
 }

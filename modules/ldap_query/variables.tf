@@ -35,12 +35,6 @@ variable "log_level" {
   type        = string
 }
 
-variable "filter_prefixes" {
-  default     = []
-  description = "List of three letter user name prefixes to filter out of the user search results"
-  type        = list(string)
-}
-
 variable "tags" {
   default     = {}
   description = "Map of tags to assign to this module's resources"

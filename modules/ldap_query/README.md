@@ -25,7 +25,6 @@ When provided an event with the `disable` action this function will:
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
 | days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
-| filter\_prefixes | List of three letter user name prefixes to filter out of the user search results | list(string) | `<list>` | no |
 | ldaps\_url | LDAPS URL of the target domain | string | n/a | yes |
 | log\_level | Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |
