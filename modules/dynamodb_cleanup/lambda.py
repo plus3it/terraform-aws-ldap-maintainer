@@ -78,7 +78,7 @@ def modify_scan_results(email_address, scan_results):
                 if email_address in email_distro:
                     email_distro.remove(email_address)
                     item["has_updates"] = True
-                    log.info(f"removed {email_address} from {distro}")
+                    log.info("removed %s from %s", email_address, distro)
         except KeyError:
             continue
     return scan_results
@@ -99,7 +99,7 @@ def apply_scan_results(updated_scan_results):
                 ExpressionAttributeValues={":distros": item["email_distros"]},
                 ReturnValues="UPDATED_NEW",
             )
-            log.info(f"updated {item['account_name']}")
+            log.info("updated %s", item["account_name"])
 
 
 def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
@@ -124,9 +124,12 @@ def remove_users_in_list(users):
 
 
 def handler(event, context):
-    log.debug(f"Received event: {event}")
+    log.debug("Received event: %s", event)
     if event["action"] == "remove":
-        users = retrieve_s3_object_contents(event["ldap_scan_results"])["120"]
+        days_since_pwdlastset = os.environ("DAYS_SINCE_PWDLASTSET")
+        users = retrieve_s3_object_contents(event["ldap_scan_results"])[
+            days_since_pwdlastset
+        ]
         remove_users_in_list(users)
         log.info("Successfully removed the stale users from dynamodb")
         return event

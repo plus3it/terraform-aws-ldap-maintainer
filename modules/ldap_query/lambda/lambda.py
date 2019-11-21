@@ -163,7 +163,7 @@ class LdapMaintainer:
         users = self.get_users()
         for user_obj in users:
             try:
-                log.debug(f"processing user: {user_obj}")
+                log.debug("processing user: %s", user_obj)
                 ft = user_obj["pwdLastSet"][0]
                 desc = user_obj["description"][0]
                 pwd_last_set = self.filetime_to_dt(ft)
@@ -174,13 +174,13 @@ class LdapMaintainer:
                     "dn": user_obj["distinguishedName"][0],
                     "days_since_last_pwd_change": days,
                 }
-                log.debug(f"got user: {user}")
+                log.debug("got user: %s", user)
                 # if employeeType is set to DTU assume the user is a test user
                 if days >= self.days_since_pwdlastset or desc == "Test account":
                     stale_users[f"{self.days_since_pwdlastset}"].append(user)
             except KeyError:
                 continue
-        log.debug(f"retrieved the following stale users: {stale_users}")
+        log.debug("retrieved the following stale users: %s", stale_users)
         return stale_users
 
     def get_ldif(self):
@@ -322,8 +322,8 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
         object_data = src_data
     else:
         log.error(
-            f"Type of {str(type(src_data))}"
-            f" for the argument 'src_data' is not supported."
+            "Type of %s for the argument 'src_data' is not supported.",
+            str(type(src_data)),
         )
         return False
 
@@ -376,7 +376,7 @@ def upload_artifact(artifact):
         dict -- dictionary containing the object name and presigned url
     """
     bucket_name = os.environ["ARTIFACTS_BUCKET"]
-    log.debug(f'Uploading object: {artifact["file_name"]} to {bucket_name}')
+    log.debug("Uploading object: %s to %s", artifact["file_name"], bucket_name)
     if put_object(
         bucket_name, artifact["file_name"], artifact["content"].encode("utf-8")
     ):
@@ -395,10 +395,9 @@ def upload_artifact(artifact):
 
 def upload_all_artifacts(**content):
     artifacts = generate_artifacts(**content)
-    log.debug(f"generated artifacts: {artifacts}")
+    log.debug("generated artifacts: %s", artifacts)
     response = []
     for artifact in artifacts:
-        # log.info(artifacts[artifact])
         response.append(upload_artifact(artifacts[artifact]))
     return response
 
@@ -423,7 +422,7 @@ def handler(event, context):
         "action": query | disable
     }
     """
-    log.info(f"Received event: {event}")
+    log.info("Received event: %s", event)
     if event.get("Payload"):
         event = event["Payload"]
     elif event.get("Input"):
@@ -446,7 +445,7 @@ def handler(event, context):
 
         if event["action"] == "query":
             ldap_config["users"] = LdapMaintainer(**ldap_config).get_stale_users()
-            log.debug(f"Ldap query results: {ldap_config['users']}")
+            log.debug("Ldap query results: %s", ldap_config["users"])
             return {
                 "query_results": {"totals": get_user_counts(ldap_config["users"])},
                 "artifacts": upload_all_artifacts(**ldap_config),
@@ -456,7 +455,7 @@ def handler(event, context):
                 event["ldap_scan_results"]
             )[ldap_config["days_since_pwdlastset"]]
             log.info(
-                f"Disabling the following users: {ldap_config['users_to_disable']}"
+                "Disabling the following users: %s", ldap_config["users_to_disable"]
             )
             LdapMaintainer(**ldap_config).disable_users()
             log.info("Users successfully disabled")

@@ -54,6 +54,7 @@ module "lambda" {
       DYNAMODB_TABLE   = var.dynamodb_table_name
       LOG_LEVEL        = var.log_level
       ARTIFACTS_BUCKET = var.artifacts_bucket_name
+      DAYS_SINCE_PWDLASTSET = var.days_since_pwdlastset
     }
   }
 

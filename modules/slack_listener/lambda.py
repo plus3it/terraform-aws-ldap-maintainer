@@ -66,7 +66,7 @@ def get_slack_payload(event):
         event["payload"] = payload
         return event
     except TypeError as e:
-        log.error(f"Event was not in the expected format: {e}")
+        log.error("Event was not in the expected format: %s", e)
 
 
 def build_sfn_message(s3_key, slack_payload):
@@ -85,7 +85,7 @@ def notify_stepfunction(message, task_token):
     sfn = boto3.client("stepfunctions")
     log.debug("Sending message to stepfunctions")
     response = sfn.send_task_success(taskToken=task_token, output=json.dumps(message))
-    log.debug(f"Received response from stepfunctions: {response}")
+    log.debug("Received response from stepfunctions: %s", response)
 
 
 # borrowed largely from here:
@@ -127,14 +127,13 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
         object_data = src_data
     else:
         log.error(
-            f"Type of {str(type(src_data))}"
-            f" for the argument 'src_data' is not supported."
+            "Type of %s for the argument 'src_data' is not supported.",
+            str(type(src_data)),
         )
         return False
 
     # Put the object
     s3 = boto3.client("s3")
-    # log.debug(f"destination object name: {dest_object_name}")
     try:
         s3.put_object(
             Bucket=dest_bucket_name,
@@ -159,17 +158,17 @@ def s3upload(
 ):
     timestamp = datetime.now().strftime("%Y-%m-%d-T%H%M%S.%f")
     object_name = f"{prefix}-{timestamp}.json"
-    log.debug(f"Uploading object: {object_name} to {bucket}")
+    log.debug("Uploading object: %s to %s", object_name, bucket)
     put_object(bucket, object_name, json.dumps(object_content).encode("utf-8"))
     return object_name
 
 
 def handler(event, context):
-    log.debug(f"received event: {event}")
+    log.debug("received event: %s", event)
 
     # parse the slack payload
     event = get_slack_payload(event)
-    log.debug(f"received slack payload: {event}")
+    log.debug("received slack payload: %s", event)
 
     # verify the slack payload
     verify_token(event, SLACK_SIGNING_SECRET)

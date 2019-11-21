@@ -225,7 +225,7 @@ def send_updated_message_to_slack(channel_id, timestamp, message_blocks):
     response = client.chat_update(
         channel=channel_id, ts=timestamp, blocks=message_blocks
     )
-    log.debug(f"Received response from slack: {response}")
+    log.debug("Received response from slack: %s", response)
     assert response["ok"]
 
 
@@ -258,7 +258,7 @@ def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
 
 
 def handler(event, context):
-    log.debug(f"Received event: {json.dumps(event)}")
+    log.debug("Received event: %s", json.dumps(event))
     if event.get("message_to_slack"):
         message = event["message_to_slack"]
         response = retrieve_s3_object_contents(event["slack_message_key"])
