@@ -94,3 +94,9 @@ variable "additional_test_users" {
   description = "List of additional test users to create in the target SimpleAD instance"
   type        = list(string)
 }
+
+variable "days_since_pwdlastset" {
+  description = "Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object."
+  type        = number
+  default     = 120
+}

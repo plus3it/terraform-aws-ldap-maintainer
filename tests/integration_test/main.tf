@@ -28,5 +28,5 @@ module "ldap_maintainer" {
   slack_channel_id        = var.slack_channel_id
   slack_api_token         = var.slack_api_token
   slack_signing_secret    = var.slack_signing_secret
-  filter_prefixes         = var.filter_prefixes
+  hands_off_accounts      = var.hands_off_accounts
 }

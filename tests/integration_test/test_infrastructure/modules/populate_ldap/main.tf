@@ -45,9 +45,9 @@ module "lambda" {
   description   = "Creates test users in standalone simplead instance"
   handler       = "lambda.handler"
   runtime       = "python3.7"
-  timeout       = 30
+  timeout       = 90
 
-  source_path = "${path.module}/lambda.py"
+  source_path = "${path.module}/lambda"
 
   environment = {
     variables = {

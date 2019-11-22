@@ -75,3 +75,9 @@ variable "additional_test_users" {
   description = "List of additional test users to create in the target SimpleAD instance"
   type        = list(string)
 }
+
+variable "hands_off_accounts" {
+  default     = []
+  description = "(Optional) List of user names to filter out of the user search results"
+  type        = list(string)
+}
