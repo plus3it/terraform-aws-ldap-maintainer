@@ -8,6 +8,7 @@ Lambda function to facilitate removing disabled users' email(s) from a target dy
 |------|-------------|:----:|:-----:|:-----:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | string | n/a | yes |
 | create\_function | Controls whether to create the dynamodb clean function | bool | `"true"` | no |
+| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | dynamodb\_table\_arn | ARN of the dynamodb table to perform maintenance actions against | string | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |

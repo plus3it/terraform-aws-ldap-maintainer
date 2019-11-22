@@ -32,7 +32,9 @@ if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
 
-log_file_name = os.getenv("AWS_EXECUTION_ENV", "dynamodb_cleanup.log")
+log_file_name = ""
+if not os.environ.get("AWS_EXECUTION_ENV"):
+    log_file_name = "dynamodb_cleanup.log"
 
 logging.basicConfig(
     filename=log_file_name,
