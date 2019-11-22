@@ -21,15 +21,6 @@ data "aws_iam_policy_document" "lambda" {
   }
 }
 
-resource "aws_lambda_layer_version" "lambda_layer" {
-  filename         = "${path.module}/lambda_layer_payload.zip"
-  layer_name       = "python-ldap-${random_string.this.result}"
-  description      = "Contains python-ldap and its dependencies"
-  source_code_hash = "${filebase64sha256("${path.module}/lambda_layer_payload.zip")}"
-
-  compatible_runtimes = ["python3.7"]
-}
-
 module "lambda" {
   source = "github.com/claranet/terraform-aws-lambda"
 
@@ -39,7 +30,7 @@ module "lambda" {
   runtime       = "python3.7"
   timeout       = 30
 
-  source_path = "${path.module}/lambda.py"
+  source_path = "${path.module}/lambda"
 
   environment = {
     variables = {
@@ -53,8 +44,6 @@ module "lambda" {
       DAYS_SINCE_PWDLASTSET = var.days_since_pwdlastset
     }
   }
-
-  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   policy = {
     json = data.aws_iam_policy_document.lambda.json
