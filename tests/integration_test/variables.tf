@@ -58,10 +58,10 @@ variable "create_windows_instance" {
   description = "Boolean used to control the creation of the windows domain member"
 }
 
-variable "create_dynamodb_cleanup" {
+variable "enable_dynamodb_cleanup" {
   type        = bool
   default     = true
-  description = "Controls wether to create the dynamodb cleanup resources"
+  description = "Controls wether to enable the dynamodb cleanup function. Resources will still be deployed."
 }
 
 variable "filter_prefixes" {

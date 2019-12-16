@@ -79,10 +79,10 @@ variable "maintenance_schedule" {
   description = "Periodicity at which to trigger the ldap maintenance step function"
 }
 
-variable "create_dynamodb_cleanup" {
+variable "enable_dynamodb_cleanup" {
   type        = bool
   default     = true
-  description = "Controls wether to create the dynamodb cleanup resources"
+  description = "Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed."
 }
 
 variable "additional_cleanup_tasks" {

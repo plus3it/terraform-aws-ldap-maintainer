@@ -53,7 +53,6 @@ module "slack_notifier" {
 module "dynamodb_cleanup" {
   source = "./modules/dynamodb_cleanup"
 
-  create_function       = var.create_dynamodb_cleanup
   project_name          = var.project_name
   dynamodb_table_name   = var.dynamodb_table_name
   dynamodb_table_arn    = var.dynamodb_table_arn
@@ -189,14 +188,14 @@ resource "aws_sfn_activity" "account_deactivation_approval" {
 }
 
 locals {
-  dynamodb_maintenance_sfn_content = var.create_dynamodb_cleanup ? templatefile(
+  dynamodb_maintenance_sfn_content = var.enable_dynamodb_cleanup ? templatefile(
     "${path.module}/templates/dynamodb_cleanup_task.tpl",
     {
       function_arn = module.dynamodb_cleanup.function_arn
   }) : ""
   # list of parallel states to run as part of the ldap object clean up
   # **Note: this list must start with a comma
-  additional_cleanup_tasks_internal = var.create_dynamodb_cleanup ? ",${local.dynamodb_maintenance_sfn_content}" : ""
+  additional_cleanup_tasks_internal = var.enable_dynamodb_cleanup ? ",${local.dynamodb_maintenance_sfn_content}" : ""
   additional_cleanup_tasks          = var.additional_cleanup_tasks == "" ? local.additional_cleanup_tasks_internal : "${local.additional_cleanup_tasks_internal}, ${var.additional_cleanup_tasks}"
 
 }

@@ -141,7 +141,7 @@ module "win_ad_mgmt" {
 
 # dynamodb
 resource "aws_dynamodb_table" "test_table" {
-  count = var.create_dynamodb ? 1 : 0
+  count = var.enable_dynamodb ? 1 : 0
 
   name           = var.project_name
   billing_mode   = "PROVISIONED"
@@ -199,7 +199,7 @@ locals {
 }
 
 data "template_file" "test" {
-  count = var.create_dynamodb ? 1 : 0
+  count = var.enable_dynamodb ? 1 : 0
 
   template = "${file("${path.module}/table_layout.json.tpl")}"
   vars = {
@@ -209,7 +209,7 @@ data "template_file" "test" {
 }
 
 resource "aws_dynamodb_table_item" "email_distro" {
-  count = var.create_dynamodb ? 1 : 0
+  count = var.enable_dynamodb ? 1 : 0
 
   table_name = aws_dynamodb_table.test_table[count.index].name
   hash_key   = aws_dynamodb_table.test_table[count.index].hash_key

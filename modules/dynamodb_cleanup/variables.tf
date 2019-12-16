@@ -31,12 +31,6 @@ variable "artifacts_bucket_name" {
   type        = string
 }
 
-variable "create_function" {
-  default     = true
-  description = "Controls whether to create the dynamodb clean function"
-  type        = bool
-}
-
 variable "resource_name_suffix" {
   default     = ""
   description = "Suffix to append this module's resource names"
