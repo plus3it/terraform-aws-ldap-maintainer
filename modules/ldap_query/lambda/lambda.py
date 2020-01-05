@@ -34,7 +34,9 @@ if root.handlers:
     for handler in root.handlers:
         root.removeHandler(handler)
 
-log_file_name = os.getenv("AWS_EXECUTION_ENV", "ldap_query.log")
+log_file_name = ""
+if not os.environ.get("AWS_EXECUTION_ENV"):
+    log_file_name = "ldap_query.log"
 
 logging.basicConfig(
     filename=log_file_name,
@@ -128,7 +130,7 @@ class LdapMaintainer:
         return non_svc_users
 
     def disable_users(self):
-        con = self.connect()
+        con = self.connection
         date = datetime.now().strftime("%Y-%m-%d-T%H%M")
         d = f"***Disabled {date} by ldapmaintbot***"
         for user_obj in self.users_to_disable:
@@ -140,6 +142,15 @@ class LdapMaintainer:
             ]
             con.modify_s(user_obj["dn"], disable_user)
             con.modify_s(user_obj["dn"], update_description)
+
+    def get_days_since_pwdlastset(self, ft):
+        # skip users that have never logged in
+        if ft == "0":
+            return 1
+        else:
+            pwd_last_set = self.filetime_to_dt(ft)
+            today = datetime.now()
+            return (today - pwd_last_set).days
 
     def get_stale_users(self):
         """
@@ -159,15 +170,13 @@ class LdapMaintainer:
         }
         """
         stale_users = {f"{self.days_since_pwdlastset}": []}
-        today = datetime.now()
         users = self.get_users()
         for user_obj in users:
             try:
                 log.debug("processing user: %s", user_obj)
                 ft = user_obj["pwdLastSet"][0]
                 desc = user_obj["description"][0]
-                pwd_last_set = self.filetime_to_dt(ft)
-                days = (today - pwd_last_set).days
+                days = self.get_days_since_pwdlastset(ft)
                 user = {
                     "name": user_obj["cn"][0],
                     "email": user_obj["mail"][0],
@@ -175,8 +184,7 @@ class LdapMaintainer:
                     "days_since_last_pwd_change": days,
                 }
                 log.debug("got user: %s", user)
-                # if employeeType is set to DTU assume the user is a test user
-                if days >= self.days_since_pwdlastset or desc == "Test account":
+                if days >= self.days_since_pwdlastset or desc == "***TEST***":
                     stale_users[f"{self.days_since_pwdlastset}"].append(user)
             except KeyError:
                 continue
@@ -191,21 +199,20 @@ class LdapMaintainer:
     def byte_decode_search_results(search_results):
         users = []
         for user in search_results:
-            user_obj = {}
-            for attribute in user[1][1]:
-                try:
-                    attribute_list = user[1][1][attribute]
-                    for i in range(len(attribute_list)):
-                        attribute_list[i] = attribute_list[i].decode(
-                            encoding="utf-8", errors="ignore"
-                        )
-                except TypeError:
-                    # some elements are already strings so
-                    # just continue past them
-                    continue
-            user_obj["dn"] = user[1][0]
-            user_obj["user"] = user[1][1]
-            users.append(user_obj)
+            # if the dn is None, skip it.
+            if not user[1][0]:
+                continue
+            else:
+                user_obj = {}
+                for attribute in user[1][1]:
+                    if "ldap://" not in attribute:
+                        user[1][1][attribute] = [
+                            item.decode(encoding="utf-8", errors="ignore")
+                            for item in user[1][1][attribute]
+                        ]
+                user_obj["dn"] = user[1][0]
+                user_obj["user"] = user[1][1]
+                users.append(user_obj)
         return users
 
     def is_special(self, sam_name, uac):
@@ -267,7 +274,7 @@ def get_html_table_headers(**content):
         return table_headers
     except IndexError:
         # return the empty list of there are no accounts to be disabled
-        return table_headers
+        return []
 
 
 def render_template(template="html_table.html", **kwargs):
@@ -277,8 +284,7 @@ def render_template(template="html_table.html", **kwargs):
         )
     )
     template = env.get_template(template)
-    output_from_parsed_template = template.render(**kwargs)
-    return output_from_parsed_template
+    return template.render(**kwargs)
 
 
 def create_html_table(**content):
