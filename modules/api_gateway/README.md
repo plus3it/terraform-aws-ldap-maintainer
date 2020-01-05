@@ -11,7 +11,7 @@ This module will deploy an API endpoint with invoke permissions to a target lamb
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | async\_lambda\_name | Name of the lambda function that API gateway will invoke asynchronously | string | n/a | yes |
-| project\_name | (Optional) Name of the project | string | `"ldap-maintainer"` | no |
+| project\_name | \(Optional\) Name of the project | string | `"ldap-maintainer"` | no |
 | tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |
 
 ## Outputs

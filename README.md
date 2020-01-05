@@ -51,15 +51,15 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| additional\_cleanup\_tasks | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | string | `""` | no |
-| create\_dynamodb\_cleanup | Controls wether to create the dynamodb cleanup resources | bool | `"true"` | no |
+| additional\_cleanup\_tasks | \(Optional\) List of step function tasks to execute in parallel once the cleanup action has been approved. | string | `""` | no |
 | days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
 | domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb to take actions against | string | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
-| hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | list(string) | `<list>` | no |
+| enable\_dynamodb\_cleanup | Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed. | bool | `"true"` | no |
+| hands\_off\_accounts | \(Optional\) List of user names to filter out of the user search results | list(string) | `<list>` | no |
 | ldaps\_url | LDAPS URL of the target domain | string | n/a | yes |
-| log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
+| log\_level | \(Optional\) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
 | maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | string | `"cron(0 8 1 * ? *)"` | no |
 | project\_name | Name of the project | string | `"ldap-maintainer"` | no |
 | slack\_api\_token | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | string | n/a | yes |
