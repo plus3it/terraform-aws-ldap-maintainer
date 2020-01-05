@@ -386,11 +386,34 @@ def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
     )
 
 
+def query_handler(ldap_config):
+    """Handles query events"""
+    ldap_config["users"] = LdapMaintainer(**ldap_config).get_stale_users()
+    log.debug("Ldap query results: %s", ldap_config["users"])
+    return {
+        "query_results": {"totals": get_user_counts(ldap_config["users"])},
+        "artifacts": upload_all_artifacts(**ldap_config),
+    }
+
+
+def disable_handler(ldap_config, event):
+    """Handles disable events"""
+    ldap_config["users_to_disable"] = retrieve_s3_object_contents(
+        event["ldap_scan_results"]
+    )[ldap_config["days_since_pwdlastset"]]
+    log.info(
+        "Disabling the following users: %s", ldap_config["users_to_disable"]
+    )
+    LdapMaintainer(**ldap_config).disable_users()
+    log.info("Users successfully disabled")
+    return event
+
+
 def handler(event, context):
     """
     expected event:
     {
-        "action": query | disable
+        "action": "query" | "disable"
     }
     """
     log.info("Received event: %s", event)
@@ -416,21 +439,8 @@ def handler(event, context):
         }
 
         if event["action"] == "query":
-            ldap_config["users"] = LdapMaintainer(**ldap_config).get_stale_users()
-            log.debug("Ldap query results: %s", ldap_config["users"])
-            return {
-                "query_results": {"totals": get_user_counts(ldap_config["users"])},
-                "artifacts": upload_all_artifacts(**ldap_config),
-            }
+            query_handler(ldap_config)
         elif event["action"] == "disable":
-            ldap_config["users_to_disable"] = retrieve_s3_object_contents(
-                event["ldap_scan_results"]
-            )[ldap_config["days_since_pwdlastset"]]
-            log.info(
-                "Disabling the following users: %s", ldap_config["users_to_disable"]
-            )
-            LdapMaintainer(**ldap_config).disable_users()
-            log.info("Users successfully disabled")
-            return event
+            disable_handler(ldap_config, event)
     # except KeyError as e:
     #     log.error(f"Event received was not in the correct format: {e}")
