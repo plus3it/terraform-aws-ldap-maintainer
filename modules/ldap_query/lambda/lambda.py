@@ -311,38 +311,16 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
     """
     Add an object to an Amazon S3 bucket
     """
-
-    # Construct Body= parameter
-    if isinstance(src_data, bytes):
-        object_data = src_data
-    else:
-        log.error(
-            "Type of %s for the argument 'src_data' is not supported.",
-            str(type(src_data)),
-        )
-        return False
-
     # Put the object
     s3 = boto3.client("s3")
     # log.debug(f"destination object name: {dest_object_name}")
-    try:
-        s3.put_object(
-            Bucket=dest_bucket_name,
-            ACL="private",
-            ContentEncoding="utf-8",
-            Key=dest_object_name,
-            Body=object_data,
-        )
-    except s3.exceptions.ClientError as e:
-        # AllAccessDisabled error == bucket not found
-        # NoSuchKey or InvalidRequest
-        # error == (dest bucket/obj == src bucket/obj)
-        log.error(e)
-        return False
-    finally:
-        if isinstance(src_data, str):
-            object_data.close()
-    return True
+    s3.put_object(
+        Bucket=dest_bucket_name,
+        ACL="private",
+        ContentEncoding="utf-8",
+        Key=dest_object_name,
+        Body=src_data,
+    )
 
 
 def create_presigned_url(bucket_name, object_name, expiration=3600):
@@ -372,12 +350,10 @@ def upload_artifact(artifact):
     """
     bucket_name = os.environ["ARTIFACTS_BUCKET"]
     log.debug("Uploading object: %s to %s", artifact["file_name"], bucket_name)
-    if put_object(
+    put_object(
         bucket_name, artifact["file_name"], artifact["content"].encode("utf-8")
-    ):
-        presigned_url = create_presigned_url(bucket_name, artifact["file_name"])
-    else:
-        log.error("Encountered error when uploading artifact")
+    )
+    presigned_url = create_presigned_url(bucket_name, artifact["file_name"])
     is_raw_scan_result = False
     if artifact.get("raw_scan_results"):
         is_raw_scan_result = True
