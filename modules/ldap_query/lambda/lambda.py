@@ -421,26 +421,23 @@ def handler(event, context):
         event = event["Payload"]
     elif event.get("Input"):
         event = event["Input"]
-    # try:
+
+    ssm_key = os.environ["SSM_KEY"]
+    svc_user_pwd = ssm.get_parameter(Name=ssm_key, WithDecryption=True)[
+        "Parameter"
+    ]["Value"]
+
+    ldap_config = {
+        "ldaps_url": os.environ["LDAPS_URL"],
+        "domain_base": os.environ["DOMAIN_BASE"],
+        "svc_user_dn": os.environ["SVC_USER_DN"],
+        "svc_user_pwd": svc_user_pwd,
+        "filter_patterns": json.loads(os.environ["HANDS_OFF_ACCOUNTS"]),
+        "days_since_pwdlastset": os.environ["DAYS_SINCE_PWDLASTSET"],
+    }
+
     if event.get("action"):
-
-        ssm_key = os.environ["SSM_KEY"]
-        svc_user_pwd = ssm.get_parameter(Name=ssm_key, WithDecryption=True)[
-            "Parameter"
-        ]["Value"]
-
-        ldap_config = {
-            "ldaps_url": os.environ["LDAPS_URL"],
-            "domain_base": os.environ["DOMAIN_BASE"],
-            "svc_user_dn": os.environ["SVC_USER_DN"],
-            "svc_user_pwd": svc_user_pwd,
-            "filter_patterns": json.loads(os.environ["HANDS_OFF_ACCOUNTS"]),
-            "days_since_pwdlastset": os.environ["DAYS_SINCE_PWDLASTSET"],
-        }
-
         if event["action"] == "query":
-            query_handler(ldap_config)
+            return query_handler(ldap_config)
         elif event["action"] == "disable":
-            disable_handler(ldap_config, event)
-    # except KeyError as e:
-    #     log.error(f"Event received was not in the correct format: {e}")
+            return disable_handler(ldap_config, event)
