@@ -265,13 +265,10 @@ def get_html_table_headers(**content):
     We don't care if the dict is unordered b/c the expectation is
     that each element of the dict will be structured the same
     """
-    table_headers = []
     user_list = content["users"]
     days_since_pwdlastset = content["days_since_pwdlastset"]
     try:
-        for key in user_list[days_since_pwdlastset][0].keys():
-            table_headers.append(key)
-        return table_headers
+        return user_list[days_since_pwdlastset][0].keys()
     except IndexError:
         # return the empty list of there are no accounts to be disabled
         return []
@@ -325,17 +322,11 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
 
 def create_presigned_url(bucket_name, object_name, expiration=3600):
     s3 = boto3.client("s3")
-    try:
-        response = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": bucket_name, "Key": object_name},
-            ExpiresIn=expiration,
-        )
-    except s3.exceptions.ClientError as e:
-        log.error(e)
-        return None
-    # The response contains the presigned URL
-    return response
+    return s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": bucket_name, "Key": object_name},
+        ExpiresIn=expiration,
+    )
 
 
 def upload_artifact(artifact):
