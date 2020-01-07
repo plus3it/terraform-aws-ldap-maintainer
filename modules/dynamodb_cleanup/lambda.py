@@ -45,7 +45,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-dyanmodb = boto3.client("dynamodb")
+dynamodb = boto3.client("dynamodb")
 dynamodb_resource = boto3.resource("dynamodb")
 table = dynamodb_resource.Table(os.environ["DYNAMODB_TABLE"])
 
