@@ -111,13 +111,17 @@ resource "aws_api_gateway_integration" "event_listener" {
   passthrough_behavior = "WHEN_NO_TEMPLATES"
 }
 
+locals {
+  slack_listener_api_endpoint_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/${aws_api_gateway_method.event_listener_post.http_method}${aws_api_gateway_resource.event_listener.path}"
+}
+
 resource "aws_lambda_permission" "apigw_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = var.async_lambda_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/${aws_api_gateway_method.event_listener_post.http_method}${aws_api_gateway_resource.event_listener.path}"
+  source_arn = local.slack_listener_api_endpoint_arn
 }
 
 resource "aws_api_gateway_method_response" "event_listener_response_200" {
