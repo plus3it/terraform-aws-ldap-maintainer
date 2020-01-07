@@ -386,7 +386,7 @@ def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
     )
 
 
-def query_handler(ldap_config):
+def query_handler(ldap_config, event):
     """Handles query events"""
     ldap_config["users"] = LdapMaintainer(**ldap_config).get_stale_users()
     log.debug("Ldap query results: %s", ldap_config["users"])
@@ -436,8 +436,9 @@ def handler(event, context):
         "days_since_pwdlastset": os.environ["DAYS_SINCE_PWDLASTSET"],
     }
 
-    if event.get("action"):
-        if event["action"] == "query":
-            return query_handler(ldap_config)
-        elif event["action"] == "disable":
-            return disable_handler(ldap_config, event)
+    strategy = {
+        "query": query_handler,
+        "disable": disable_handler
+    }
+
+    strategy[event['action']](ldap_config, event)
