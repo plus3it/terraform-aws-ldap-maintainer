@@ -432,4 +432,4 @@ def handler(event, context):
         "disable": disable_handler
     }
 
-    strategy[event['action']](ldap_config, event)
+    return strategy[event['action']](ldap_config, event)
