@@ -1,15 +1,3 @@
-variable "container_name" {
-  type        = string
-  default     = "LayerCreator"
-  description = "(Optional) Name to assign to the docker container"
-}
-
-variable "docker_mounts" {
-  type        = list(map(string))
-  default     = []
-  description = "(Optional) List of maps containing additional docker mounts. Note: these must be absolute paths"
-}
-
 variable "docker_commands" {
   type        = list(string)
   default     = []
@@ -32,12 +20,6 @@ variable "layer_build_script" {
   type        = string
   default     = ""
   description = "(Optional) Full file path to the layer build script"
-}
-
-variable "docker_bindmounts" {
-  type        = list(string)
-  default     = []
-  description = "(Optional) List of directories to bind to the docker image"
 }
 
 variable "target_lambda_path" {
