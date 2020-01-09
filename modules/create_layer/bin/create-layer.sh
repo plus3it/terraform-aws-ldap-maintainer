@@ -2,6 +2,11 @@
 
 set -e
 
+function error_exit() {
+    echo "$(tput setaf 4)$1$(tput sgr0)" 1>&2
+    exit 1
+}
+
 PYTHON_VERSION="python3.7"
 
 # Ensure required bins were installed
@@ -13,14 +18,13 @@ mapfile -t directories < <(find "$PROJECT_DIR" -name 'requirements.layer.txt' -e
 
 for dir in "${directories[@]}"
 do
-  cd "${dir}" || ( echo "Unable to navigate to ${dir}"; exit 1)
+  cd "${dir}" || error_exit "Unable to navigate to ${dir}"
   lambda_package="/$(pwd)/lambda-package"
   layer_path="$lambda_package/python/lib/$PYTHON_VERSION/site-packages/"
-  mkdir -p "$layer_path" || ( echo "Unable to create $layer_path"; exit 1)
-  pip3 install -r requirements.layer.txt -t "$layer_path" || (echo "Encountered error installing python dependency"; exit 1)
-  pushd lambda-package/ || ( echo "Unable to navigate to lambda-package/"; exit 1)
-  zip -r ../lambda_layer_payload.zip python/* -x "setuptools*/*" "pkg_resources/*" "easy_install*" >/dev/null 2>&1
-  popd || ( echo "Unable to return to source directory"; exit 1)
+  mkdir -p "$layer_path" || error_exit "Unable to create $layer_path"
+  pip3 install -r requirements.layer.txt -t "$layer_path" || error_exit "Encountered error installing python dependency"
+  pushd lambda-package/ || error_exit "Unable to navigate to lambda-package/"
+  zip -r ../lambda_layer_payload.zip python/* -x "setuptools*/*" "pkg_resources/*" "easy_install*" >/dev/null 2>&1 || error_exit "encountered error when compressing archive"
+  popd || error_exit "Unable to return to source directory"
   rm -rf "$lambda_package"
-  echo "Generated layer for: $(basename "${dir}")"
 done
