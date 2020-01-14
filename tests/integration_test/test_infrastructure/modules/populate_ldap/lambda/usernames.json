@@ -1,0 +1,111 @@
+{
+    "special": [
+        {
+            "name": "adm0",
+            "sam": "adm0test",
+            "surname": "test"
+        },
+        {
+            "name": "adm1",
+            "sam": "adm1test",
+            "surname": "test"
+        },
+        {
+            "name": "svc0",
+            "sam": "svc0test",
+            "surname": "test"
+        },
+        {
+            "name": "svc1",
+            "sam": "svc1test",
+            "surname": "test"
+        }
+    ],
+    "standard": [
+        {
+            "name": "xTiffany",
+            "sam": "xTiffany.Dixon",
+            "surname": "xDixon"
+        },
+        {
+            "name": "xRandy",
+            "sam": "xRandy.Harrison",
+            "surname": "xHarrison"
+        },
+        {
+            "name": "xJoan",
+            "sam": "xJoan.May",
+            "surname": "xMay"
+        },
+        {
+            "name": "xNicole",
+            "sam": "xNicole.Chapman",
+            "surname": "xChapman"
+        },
+        {
+            "name": "xEvelyn",
+            "sam": "xEvelyn.Montgomery",
+            "surname": "xMontgomery"
+        },
+        {
+            "name": "xShirley",
+            "sam": "xShirley.Henderson",
+            "surname": "xHenderson"
+        },
+        {
+            "name": "xJean",
+            "sam": "xJean.Shaw",
+            "surname": "xShaw"
+        },
+        {
+            "name": "xHoward",
+            "sam": "xHoward.Bell",
+            "surname": "xBell"
+        },
+        {
+            "name": "xJuan",
+            "sam": "xJuan.Torres",
+            "surname": "xTorres"
+        },
+        {
+            "name": "xMegan",
+            "sam": "xMegan.Richardson",
+            "surname": "xRichardson"
+        },
+        {
+            "name": "xKathy",
+            "sam": "xKathy.Washington",
+            "surname": "xWashington"
+        },
+        {
+            "name": "xBrian",
+            "sam": "xBrian.Murphy",
+            "surname": "xMurphy"
+        },
+        {
+            "name": "xMatthew",
+            "sam": "xMatthew.Rios",
+            "surname": "xRios"
+        },
+        {
+            "name": "xStephanie",
+            "sam": "xStephanie.Herrera",
+            "surname": "xHerrera"
+        },
+        {
+            "name": "xJoan",
+            "sam": "xJoan.Sullivan",
+            "surname": "xSullivan"
+        },
+        {
+            "name": "xSharon",
+            "sam": "xSharon.Clark",
+            "surname": "xClark"
+        },
+        {
+            "name": "xSarah",
+            "sam": "xSarah.Warren",
+            "surname": "xWarren"
+        }
+    ]
+}

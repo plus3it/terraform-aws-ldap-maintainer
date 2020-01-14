@@ -106,7 +106,7 @@ json/format: | guard/program/jq
 	@ echo "[$@]: Successfully formatted JSON files!"
 
 tfdocs-awk/install: $(BIN_DIR)
-tfdocs-awk/install: ARCHIVE := https://github.com/plus3it/tfdocs-awk/archive/master.tar.gz
+tfdocs-awk/install: ARCHIVE := https://github.com/plus3it/tfdocs-awk/archive/0.0.2.tar.gz
 tfdocs-awk/install:
 	$(CURL) $(ARCHIVE) | tar -C $(BIN_DIR) --strip-components=1 --wildcards '*.sh' --wildcards '*.awk' -xzvf -
 
@@ -121,7 +121,7 @@ docs/lint: | tfdocs-awk/install guard/program/terraform-docs
 	@ echo "[$@] documentation linting complete!"
 
 terratest/install: | guard/program/go
-	cd tests && go mod init {{cookiecutter.module_name}}/tests
+	cd tests && go mod init terraform-aws-ldap-maintainer/tests
 	cd tests && go build ./...
 	cd tests && go mod tidy
 
@@ -129,3 +129,8 @@ terratest/test: | guard/program/go
 	cd tests && go test -count=1 -timeout 20m
 
 test: terratest/test
+
+layers/generate:
+	@ echo "[$@]: Creating documentation files.."
+	@ bash -eu -o pipefail ./bin/generate-layer.sh -g
+	@ echo "[$@]: Documentation generated!"
