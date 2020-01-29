@@ -3,7 +3,7 @@ locals {
   docker_commands         = concat(local.default_docker_commands, var.docker_commands)
   docker_image_name       = var.docker_image_name == "" ? "ldapmaint/layer" : var.docker_image_name
 
-  dockerfile          = var.dockerfile == "" ? "${path.module}/bin/Dockerfile.layers" : var.dockerfile
+  dockerfile          = var.dockerfile == "" ? "${abspath(path.module)}/bin/Dockerfile.layers" : var.dockerfile
   layer_build_script  = var.layer_build_script == "" ? "${abspath(path.module)}/bin/create-layer.sh" : var.layer_build_script
   layer_build_command = var.layer_build_command == "" ? "bash -c './bin/create-layer.sh'" : var.layer_build_command
 
@@ -63,7 +63,7 @@ resource "null_resource" "publish_layer" {
 
   provisioner "local-exec" {
     when        = "create"
-    command     = "bin/publish-layer.sh 2>\"${path.module}/stderr.${null_resource.create_layer.id}\" >\"${path.module}/stdout.${null_resource.create_layer.id}\"; echo $? >\"${path.module}/exitstatus.${null_resource.create_layer.id}\""
+    command     = "bin/publish-layer.sh 2>\"${abspath(path.module)}/stderr.${null_resource.create_layer.id}\" >\"${abspath(path.module)}/stdout.${null_resource.create_layer.id}\"; echo $? >\"${abspath(path.module)}/exitstatus.${null_resource.create_layer.id}\""
     working_dir = path.module
     environment = {
       LAYER_NAME          = var.layer_name
@@ -76,36 +76,36 @@ resource "null_resource" "publish_layer" {
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${path.module}/stdout.${null_resource.create_layer.id}\""
+    command    = "rm \"${abspath(path.module)}/stdout.${null_resource.create_layer.id}\""
     on_failure = continue
   }
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${path.module}/stderr.${null_resource.create_layer.id}\""
+    command    = "rm \"${abspath(path.module)}/stderr.${null_resource.create_layer.id}\""
     on_failure = continue
   }
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${path.module}/exitstatus.${null_resource.create_layer.id}\""
+    command    = "rm \"${abspath(path.module)}/exitstatus.${null_resource.create_layer.id}\""
     on_failure = continue
   }
 }
 
 data "external" "stdout" {
   depends_on = [null_resource.publish_layer]
-  program    = ["sh", "${path.module}/bin/read.sh", "${path.module}/stdout.${null_resource.create_layer.id}"]
+  program    = ["sh", "${abspath(path.module)}/bin/read.sh", "${abspath(path.module)}/stdout.${null_resource.create_layer.id}"]
 }
 
 data "external" "stderr" {
   depends_on = [null_resource.publish_layer]
-  program    = ["sh", "${path.module}/bin/read.sh", "${path.module}/stderr.${null_resource.create_layer.id}"]
+  program    = ["sh", "${abspath(path.module)}/bin/read.sh", "${abspath(path.module)}/stderr.${null_resource.create_layer.id}"]
 }
 
 data "external" "exitstatus" {
   depends_on = [null_resource.publish_layer]
-  program    = ["sh", "${path.module}/bin/read.sh", "${path.module}/exitstatus.${null_resource.create_layer.id}"]
+  program    = ["sh", "${abspath(path.module)}/bin/read.sh", "${abspath(path.module)}/exitstatus.${null_resource.create_layer.id}"]
 }
 
 # could probably make this run on updates to the resulting
