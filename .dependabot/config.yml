@@ -25,3 +25,7 @@ update_configs:
   - package_manager: "docker"
     directory: "/modules/create_layer/bin"
     update_schedule: "daily"
+
+  - package_manager: "docker"
+    directory: "/"
+    update_schedule: "daily"

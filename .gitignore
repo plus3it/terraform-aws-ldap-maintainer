@@ -20,3 +20,10 @@
 
 # ignore this file
 !tfmodule-template.tf
+
+# tardigrade-ci
+tardigrade-ci/
+.tardigrade-ci
+
+# eclint
+.git/

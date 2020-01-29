@@ -74,7 +74,7 @@ resource "null_resource" "publish_layer" {
     }
   }
 
-    provisioner "local-exec" {
+  provisioner "local-exec" {
     when       = destroy
     command    = "rm \"${path.module}/stdout.${null_resource.create_layer.id}\""
     on_failure = continue
@@ -115,7 +115,7 @@ resource "null_resource" "contents" {
     null_resource.docker_image_validate,
     null_resource.create_layer,
     null_resource.publish_layer
-    ]
+  ]
 
   triggers = {
     stdout     = data.external.stdout.result["content"]

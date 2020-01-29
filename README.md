@@ -47,28 +47,36 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 - Bobbie Couhbor's awesome [blogpost](https://blog.kloud.com.au/2018/01/09/replacing-the-service-desk-with-bots-using-amazon-lex-and-amazon-connect-part-3/) on using python-ldap via lambda
 - Rigel Di Scala's blog post [Write a serverless Slack chat bot using AWS](https://chatbotslife.com/write-a-serverless-slack-chat-bot-using-aws-e2d2432c380e)
 
+<!-- BEGIN TFDOCS -->
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+| random | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| additional\_cleanup\_tasks | \(Optional\) List of step function tasks to execute in parallel once the cleanup action has been approved. | string | `""` | no |
-| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | number | `"120"` | no |
-| domain\_base\_dn | Distinguished name of the domain | string | n/a | yes |
-| dynamodb\_table\_arn | ARN of the dynamodb to take actions against | string | n/a | yes |
-| dynamodb\_table\_name | Name of the dynamodb to take actions against | string | n/a | yes |
-| enable\_dynamodb\_cleanup | Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed. | bool | `"true"` | no |
-| hands\_off\_accounts | \(Optional\) List of user names to filter out of the user search results | list(string) | `<list>` | no |
-| ldaps\_url | LDAPS URL of the target domain | string | n/a | yes |
-| log\_level | \(Optional\) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | string | `"Info"` | no |
-| maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | string | `"cron(0 8 1 * ? *)"` | no |
-| project\_name | Name of the project | string | `"ldap-maintainer"` | no |
-| slack\_api\_token | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | string | n/a | yes |
-| slack\_channel\_id | Channel that the slack notifier will post to | string | n/a | yes |
-| slack\_signing\_secret | The slack application's signing secret. Located under the slack application Settings > Basic Information | string | n/a | yes |
-| svc\_user\_dn | Distinguished name of the LDAP Maintenance service account used to manage simpleAD | string | n/a | yes |
-| svc\_user\_pwd\_ssm\_key | SSM parameter key that contains the LDAP Maintenance service account password | string | n/a | yes |
-| tags | Map of tags to assign to this module's resources | map(string) | `<map>` | no |
-| vpc\_id | ID of the VPC hosting the target Simple AD instance | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| domain\_base\_dn | Distinguished name of the domain | `string` | n/a | yes |
+| dynamodb\_table\_arn | ARN of the dynamodb to take actions against | `string` | n/a | yes |
+| dynamodb\_table\_name | Name of the dynamodb to take actions against | `string` | n/a | yes |
+| ldaps\_url | LDAPS URL of the target domain | `string` | n/a | yes |
+| slack\_api\_token | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | `string` | n/a | yes |
+| slack\_channel\_id | Channel that the slack notifier will post to | `string` | n/a | yes |
+| slack\_signing\_secret | The slack application's signing secret. Located under the slack application Settings > Basic Information | `string` | n/a | yes |
+| svc\_user\_dn | Distinguished name of the LDAP Maintenance service account used to manage simpleAD | `string` | n/a | yes |
+| svc\_user\_pwd\_ssm\_key | SSM parameter key that contains the LDAP Maintenance service account password | `string` | n/a | yes |
+| vpc\_id | ID of the VPC hosting the target Simple AD instance | `string` | n/a | yes |
+| additional\_cleanup\_tasks | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | `string` | `""` | no |
+| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | `number` | `120` | no |
+| enable\_dynamodb\_cleanup | Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed. | `bool` | `true` | no |
+| hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | `list(string)` | `[]` | no |
+| log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
+| maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | `string` | `"cron(0 8 1 * ? *)"` | no |
+| project\_name | Name of the project | `string` | `"ldap-maintainer"` | no |
+| tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
@@ -76,3 +84,4 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 |------|-------------|
 | slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
 
+<!-- END TFDOCS -->
