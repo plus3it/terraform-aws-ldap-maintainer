@@ -341,9 +341,7 @@ def upload_artifact(artifact):
     """
     bucket_name = os.environ["ARTIFACTS_BUCKET"]
     log.debug("Uploading object: %s to %s", artifact["file_name"], bucket_name)
-    put_object(
-        bucket_name, artifact["file_name"], artifact["content"].encode("utf-8")
-    )
+    put_object(bucket_name, artifact["file_name"], artifact["content"].encode("utf-8"))
     presigned_url = create_presigned_url(bucket_name, artifact["file_name"])
     is_raw_scan_result = False
     if artifact.get("raw_scan_results"):
@@ -392,9 +390,7 @@ def disable_handler(ldap_config, event):
     ldap_config["users_to_disable"] = retrieve_s3_object_contents(
         event["ldap_scan_results"]
     )[ldap_config["days_since_pwdlastset"]]
-    log.info(
-        "Disabling the following users: %s", ldap_config["users_to_disable"]
-    )
+    log.info("Disabling the following users: %s", ldap_config["users_to_disable"])
     LdapMaintainer(**ldap_config).disable_users()
     log.info("Users successfully disabled")
     return event
@@ -414,9 +410,9 @@ def handler(event, context):
         event = event["Input"]
 
     ssm_key = os.environ["SSM_KEY"]
-    svc_user_pwd = ssm.get_parameter(Name=ssm_key, WithDecryption=True)[
-        "Parameter"
-    ]["Value"]
+    svc_user_pwd = ssm.get_parameter(Name=ssm_key, WithDecryption=True)["Parameter"][
+        "Value"
+    ]
 
     ldap_config = {
         "ldaps_url": os.environ["LDAPS_URL"],
@@ -427,9 +423,6 @@ def handler(event, context):
         "days_since_pwdlastset": os.environ["DAYS_SINCE_PWDLASTSET"],
     }
 
-    strategy = {
-        "query": query_handler,
-        "disable": disable_handler
-    }
+    strategy = {"query": query_handler, "disable": disable_handler}
 
-    return strategy[event['action']](ldap_config, event)
+    return strategy[event["action"]](ldap_config, event)
