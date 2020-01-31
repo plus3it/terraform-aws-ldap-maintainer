@@ -84,7 +84,7 @@ module "lambda" {
   runtime       = "python3.7"
   timeout       = 300
 
-  source_path = "${path.module}/lambda"
+  source_path = "${abspath(path.module)}/lambda"
 
   policy = data.aws_iam_policy_document.lambda
 

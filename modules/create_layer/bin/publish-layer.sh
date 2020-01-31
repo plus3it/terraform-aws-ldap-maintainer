@@ -30,7 +30,7 @@ function publish_layer() {
       --zip-file "fileb://$LAYER_ARCHIVE_FULL_PATH" \
       --compatible-runtimes "$COMPATIBLE_RUNTIMES") || error_exit "failed to publish layer"
 
-  LAYER_ARN=$(echo "$PUBLISH_LAYER_RESPONSE" | jq -r '.LayerArn')
+  LAYER_ARN=$(echo "$PUBLISH_LAYER_RESPONSE" | jq -r '.LayerVersionArn')
 }
 
 function produce_output() {
