@@ -88,7 +88,7 @@ class LdapMaintainer:
         ldap_async.startSearch(search_root, ldap.SCOPE_SUBTREE, filter_string)
         try:
             partial = ldap_async.processResults()
-        except ldap_async.SIZELIMIT_EXCEEDED:
+        except ldap.SIZELIMIT_EXCEEDED:
             log.error("Warning: Server-side size limit exceeded")
         else:
             if partial:
