@@ -308,8 +308,6 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
     """
     Add an object to an Amazon S3 bucket
     """
-    # Put the object
-    s3 = boto3.client("s3")
     # log.debug(f"destination object name: {dest_object_name}")
     s3.put_object(
         Bucket=dest_bucket_name,
@@ -321,10 +319,13 @@ def put_object(dest_bucket_name, dest_object_name, src_data):
 
 
 def create_presigned_url(bucket_name, object_name, expiration=3600):
-    s3 = boto3.client("s3")
     return s3.generate_presigned_url(
         "get_object",
-        Params={"Bucket": bucket_name, "Key": object_name},
+        Params={
+            "Bucket": bucket_name,
+            "Key": object_name,
+            "ResponseContentType": "text/html",
+        },
         ExpiresIn=expiration,
     )
 
