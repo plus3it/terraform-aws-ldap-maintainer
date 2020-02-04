@@ -29,11 +29,12 @@ resource "aws_security_group" "lambda" {
   }
 }
 
-resource "aws_lambda_layer_version" "lambda_layer" {
-  filename         = "${path.module}/lambda_layer_payload.zip"
-  layer_name       = "python-ldap-${random_string.this.result}"
-  description      = "Contains python-ldap and its dependencies"
-  source_code_hash = "${filebase64sha256("${path.module}/lambda_layer_payload.zip")}"
+module "lambda_layer" {
+  source = "../../../../../modules/create_layer"
+
+  target_lambda_path = "${abspath(path.module)}"
+  layer_name         = "python-ldap-${random_string.this.result}"
+  layer_description  = "Contains python-ldap and its dependencies"
 
   compatible_runtimes = ["python3.7"]
 }
@@ -66,5 +67,5 @@ module "lambda" {
     security_group_ids = [aws_security_group.lambda.id]
   }
 
-  layers = [aws_lambda_layer_version.lambda_layer.arn]
+  layers = [module.lambda_layer.layer_arn]
 }

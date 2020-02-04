@@ -136,9 +136,11 @@ resource "aws_api_gateway_method_response" "event_listener_response_200" {
 }
 
 resource "aws_api_gateway_integration_response" "event_listener_response_200" {
+
   depends_on = [
-    "aws_api_gateway_integration.event_listener"
+    aws_api_gateway_integration.event_listener
   ]
+
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.event_listener.id
   http_method = aws_api_gateway_method.event_listener_post.http_method
@@ -148,7 +150,7 @@ resource "aws_api_gateway_integration_response" "event_listener_response_200" {
 # deploy the api
 resource "aws_api_gateway_deployment" "respond" {
   depends_on = [
-    "aws_api_gateway_integration.event_listener"
+    aws_api_gateway_integration.event_listener
   ]
   rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = "respond"

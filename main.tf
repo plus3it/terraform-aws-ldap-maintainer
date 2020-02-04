@@ -158,7 +158,7 @@ data "aws_iam_policy_document" "sfn" {
 resource "aws_iam_policy" "sfn" {
   name        = "${var.project_name}-sfn"
   description = "Policy used by the ${var.project_name} Step Function"
-  policy      = "${data.aws_iam_policy_document.sfn.json}"
+  policy      = data.aws_iam_policy_document.sfn.json
 }
 
 data "aws_iam_policy_document" "trust" {
@@ -180,7 +180,7 @@ resource "aws_iam_role" "sfn" {
 resource "aws_iam_policy_attachment" "sfn" {
   name       = "${var.project_name}-sfn"
   roles      = ["${aws_iam_role.sfn.name}"]
-  policy_arn = "${aws_iam_policy.sfn.arn}"
+  policy_arn = aws_iam_policy.sfn.arn
 }
 
 resource "aws_sfn_activity" "account_deactivation_approval" {
@@ -202,7 +202,7 @@ locals {
 
 resource "aws_sfn_state_machine" "ldap_maintenance" {
   name     = var.project_name
-  role_arn = "${aws_iam_role.sfn.arn}"
+  role_arn = aws_iam_role.sfn.arn
 
   definition = templatefile(
     "${path.module}/templates/ldap_maintainer_stepfunction.tpl",
@@ -229,7 +229,7 @@ data "aws_iam_policy_document" "cwe" {
 resource "aws_iam_policy" "cwe" {
   name        = "${var.project_name}-cwe"
   description = "Policy used by the ${var.project_name} Cloudwatch Event"
-  policy      = "${data.aws_iam_policy_document.cwe.json}"
+  policy      = data.aws_iam_policy_document.cwe.json
 }
 
 data "aws_iam_policy_document" "cwe_trust" {
@@ -251,7 +251,7 @@ resource "aws_iam_role" "cwe" {
 resource "aws_iam_policy_attachment" "cwe" {
   name       = "${var.project_name}-cwe"
   roles      = ["${aws_iam_role.cwe.name}"]
-  policy_arn = "${aws_iam_policy.cwe.arn}"
+  policy_arn = aws_iam_policy.cwe.arn
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
