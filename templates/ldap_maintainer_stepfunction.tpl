@@ -52,6 +52,7 @@
       "Parameters": {
             "FunctionName": "${slack_notifier_lambda_name}",
             "Payload": {
+              "slack_message_key.$": "$.slack_message_key",
               "message_to_slack": "The LDAP operation has been disapproved"
             }
       },
