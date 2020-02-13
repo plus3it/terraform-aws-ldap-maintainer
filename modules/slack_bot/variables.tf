@@ -7,6 +7,7 @@ variable "project_name" {
 variable "slack_api_token" {
   description = "API token used by the slack client"
   type        = string
+  default     = ""
 }
 
 variable "log_level" {
@@ -36,6 +37,11 @@ variable "tags" {
   default     = {}
   description = "Map of tags to assign to this module's resources"
   type        = map(string)
+}
+
+variable "target_api_gw" {
+  description = "Name of the api to add the lambda proxy to"
+  type        = string
 }
 
 variable "artifacts_bucket_name" {

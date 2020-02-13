@@ -148,10 +148,10 @@ resource "aws_api_gateway_integration_response" "event_listener_response_200" {
 }
 
 # deploy the api
-resource "aws_api_gateway_deployment" "respond" {
+resource "aws_api_gateway_deployment" "this" {
   depends_on = [
     aws_api_gateway_integration.event_listener
   ]
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = "respond"
+  stage_name  = var.stage_name
 }

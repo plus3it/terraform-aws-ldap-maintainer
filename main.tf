@@ -12,8 +12,7 @@ module "slack_event_listener" {
   artifacts_bucket_name = aws_s3_bucket.artifacts.id
   slack_api_token       = var.slack_api_token
   slack_signing_secret  = var.slack_signing_secret
-  step_function_arns    = list(aws_sfn_state_machine.ldap_maintenance.id)
-  api_gw_role_arn       = module.api_gateway.api_gw_role_arn
+  step_function_arn     = aws_sfn_state_machine.ldap_maintenance.id
 
   slack_listener_api_endpoint_arn = module.api_gateway.slack_listener_api_endpoint_arn
 
@@ -46,6 +45,19 @@ module "slack_notifier" {
   sfn_activity_arn      = aws_sfn_activity.account_deactivation_approval.id
   invoke_base_url       = module.api_gateway.invoke_url
   days_since_pwdlastset = var.days_since_pwdlastset
+
+  log_level = var.log_level
+}
+
+module "slack_bot" {
+  source = "./modules/slack_bot"
+
+  project_name          = var.project_name
+  step_function_arn     = aws_sfn_state_machine.ldap_maintenance.id
+  target_api_gw         = module.api_gateway.name
+  slack_signing_secret  = var.slack_signing_secret
+  slack_api_token       = var.slack_api_token
+  artifacts_bucket_name = aws_s3_bucket.artifacts.id
 
   log_level = var.log_level
 }
@@ -109,7 +121,8 @@ locals {
     module.slack_notifier.role_arn,
     module.slack_event_listener.role_arn,
     module.ldap_query_lambda.role_arn,
-    module.dynamodb_cleanup.role_arn
+    module.dynamodb_cleanup.role_arn,
+    module.slack_bot.role_arn
   ])
 }
 
