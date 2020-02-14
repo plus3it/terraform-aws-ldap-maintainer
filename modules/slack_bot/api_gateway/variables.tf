@@ -10,8 +10,13 @@ variable "project_name" {
   type        = string
 }
 
-variable "async_lambda_name" {
-  description = "Name of the lambda function that API gateway will invoke asynchronously"
+variable "passthrough_lambda_name" {
+  description = "Name of the lambda function that API gateway will pass information to"
+  type        = string
+}
+
+variable "target_api_gw" {
+  description = "Name of the api to add the lambda proxy endpoint to"
   type        = string
 }
 

@@ -43,8 +43,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 # Set global defaults
-BOT_TOKEN = os.environ["SLACK_API_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
+SLACK_BOT_TOKEN = os.environ["SLACK_API_TOKEN"]
 SLACK_URL = "https://slack.com/api/chat.postMessage"
 
 s3 = boto3.client("s3")
@@ -170,7 +170,6 @@ def handler(event, context):
     event = get_slack_payload(event)
     log.debug("received slack payload: %s", event)
 
-    # verify the slack payload
     verify_token(event, SLACK_SIGNING_SECRET)
 
     # upload the payload to s3

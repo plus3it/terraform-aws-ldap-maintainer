@@ -16,6 +16,7 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 - [LDAP Query](/modules/ldap_query): Lambda function used to perform actions against a target ldap database
 - [Slack Listener](/modules/slack_listener): Lambda function that responds to slack events via an asynchronously executed lambda function
 - [Slack Notifier](/modules/slack_notifier): Lambda function that sends status updates to slack and a target step function
+- [Slack Bot](/modules/slack_bot): API Gateway endpoint and Lambda function that responds to slash commands from slack
 
 ## Setup
 
@@ -34,12 +35,15 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
     - the Bot User OAuth Access Token: Located under the slack application Settings > Install App > Bot User OAuth Access Token
 6. Configure your `terraform.tfvars` with the required inputs.
 7. Run `terraform init/apply`
-8. Using the provided output url, enable slack events for your slackbot
+8. Using the provided output url, enable slack events for your slack integration
       1. Go to https://api.slack.com
       2. Find your app
       3. Navigate to Features > Event Subscriptions > Enable Events
       4. Enter the api gateway url created in the previous step
-9. Test the integration by manually triggering the LDAP maintenance step function with the following payload: `{"action": "query" }`
+      5. Navigate to Features > Slash Commands
+      6. Create a new command called `/ldap`
+      7. Add the slackbot request url to this command
+9. Test the integration from slack by calling `/ldap run` or manually by triggering the LDAP maintenance step function with the following payload: `{"action": "query" }`
 
 ## References
 

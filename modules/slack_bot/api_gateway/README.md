@@ -4,7 +4,7 @@ terraform-aws-ldap-maintainer API Gateway module
 
 ## Overview
 
-This module will deploy an API endpoint with invoke permissions to a target lambda function. This lambda function will then be executed asynchronously when the endpoint is triggered. Currently this endpoint has only been configured to respond to slack events.
+This module will deploy an API endpoint that proxies requests for the slackbot Lambda function.
 
 <!-- BEGIN TFDOCS -->
 ## Providers
@@ -17,7 +17,8 @@ This module will deploy an API endpoint with invoke permissions to a target lamb
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| async\_lambda\_name | Name of the lambda function that API gateway will invoke asynchronously | `string` | n/a | yes |
+| passthrough\_lambda\_name | Name of the lambda function that API gateway will pass information to | `string` | n/a | yes |
+| target\_api\_gw | Name of the api to add the lambda proxy endpoint to | `string` | n/a | yes |
 | project\_name | (Optional) Name of the project | `string` | `"ldap-maintainer"` | no |
 | stage\_name | Name of the api stage to deploy | `string` | `"ldapmaintainer"` | no |
 | tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
@@ -28,7 +29,6 @@ This module will deploy an API endpoint with invoke permissions to a target lamb
 |------|-------------|
 | api\_gw\_role\_arn | ARN of the IAM role assigned to the API gateway |
 | invoke\_url | Base url used to invoke this module's api endpoints |
-| name | Name of the generated rest api |
 | slack\_listener\_api\_endpoint\_arn | ARN of the slack listener API endpoint |
 
 <!-- END TFDOCS -->

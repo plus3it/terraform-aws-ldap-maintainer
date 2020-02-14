@@ -1,13 +1,16 @@
-# Slack Listener Lambda
+# SlackBot
 
-Lambda function that responds to slack events
+terraform-aws-ldap-maintainer slackbot module
 
 ## Overview
 
-This function is intended for use with this project's API Gateway module. An API Gateway endpoint will be configured as the target slack integration's Interactive Component Request URL, so that on receipt of a slack event this function will:
+This module will deploy a Lambda function with an API Gateway endpoint configured for LAMBDA_PROXY. This lambda function provides slash command support to the ldapmaintainer slack integration.
 
-1. Determine if the received slack event is valid
-2. And if so provide a target step function with a wait token extracted from the response.
+## Supported Slash Commands
+
+*cancel|stop*: Cancels the current execution
+*start|run*: Starts a new scan
+*help|?*: this help menu
 
 <!-- BEGIN TFDOCS -->
 ## Providers
@@ -22,10 +25,11 @@ This function is intended for use with this project's API Gateway module. An API
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
-| slack\_api\_token | API token used by the slack client | `string` | n/a | yes |
 | step\_function\_arn | State machine ARN that the api gateway is able to perform actions against | `string` | n/a | yes |
+| target\_api\_gw | Name of the api to add the lambda proxy to | `string` | n/a | yes |
 | log\_level | Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
 | project\_name | Name of the project | `string` | `"ldap-maintainer"` | no |
+| slack\_api\_token | API token used by the slack client | `string` | `""` | no |
 | slack\_listener\_api\_endpoint\_arn | ARN of the slack listener API endpoint | `string` | `""` | no |
 | slack\_signing\_secret | The slack application's signing secret | `string` | `""` | no |
 | tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
