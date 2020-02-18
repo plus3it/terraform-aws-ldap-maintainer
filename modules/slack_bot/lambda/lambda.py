@@ -115,12 +115,12 @@ def create_presigned_url(bucket_name, object_name, expiration=3600):
 
 
 def get_user_report():
-    latest_user_expiration_report = get_latest_s3_object()["Key"]
+    latest_user_expiration_report = get_latest_s3_object()
     log.debug("latest user expiration report object: %s", latest_user_expiration_report)
     url = create_presigned_url(
-        os.environ["ARTIFACTS_BUCKET"], latest_user_expiration_report
+        os.environ["ARTIFACTS_BUCKET"], latest_user_expiration_report["Key"]
     )
-    return f"latest report: <{url}|{latest_user_expiration_report}>"
+    return f'latest report: <{url}|{latest_user_expiration_report["Key"]}>'
 
 
 def message_check(pattern, message_string, flags=re.IGNORECASE):
@@ -166,6 +166,7 @@ def slack_message_handler(message):
         bot_text = """
         I support the follwing commands:
         *cancel|stop*: Cancels the current execution
+        *report*: Generates a url for the latest user report
         *start|run*: Starts a new scan
         *help|?*: this help menu
         """
