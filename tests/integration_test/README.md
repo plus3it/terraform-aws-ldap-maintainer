@@ -3,6 +3,10 @@
 Deploys the ldap-maintenance project alongside a SimpleAD instance
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 No provider.
@@ -10,7 +14,7 @@ No provider.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | certificate\_arn | ARN of the certificate to back the LDAPS endpoint | `string` | n/a | yes |
 | directory\_name | DNS name of the SimpleAD directory | `string` | n/a | yes |
 | key\_pair\_name | Name of the keypair to associate with the provisioned instance | `string` | n/a | yes |

@@ -10,6 +10,10 @@ This function is intended for use with this project's API Gateway module. An API
 2. And if so provide a target step function with a wait token extracted from the response.
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -20,7 +24,7 @@ This function is intended for use with this project's API Gateway module. An API
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | slack\_api\_token | API token used by the slack client | `string` | n/a | yes |
 | step\_function\_arn | State machine ARN that the api gateway is able to perform actions against | `string` | n/a | yes |

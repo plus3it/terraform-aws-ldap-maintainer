@@ -52,6 +52,10 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 - Rigel Di Scala's blog post [Write a serverless Slack chat bot using AWS](https://chatbotslife.com/write-a-serverless-slack-chat-bot-using-aws-e2d2432c380e)
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -62,7 +66,7 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | domain\_base\_dn | Distinguished name of the domain | `string` | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb to take actions against | `string` | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | `string` | n/a | yes |

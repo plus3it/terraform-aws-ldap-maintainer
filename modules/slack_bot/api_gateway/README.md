@@ -7,6 +7,10 @@ terraform-aws-ldap-maintainer API Gateway module
 This module will deploy an API endpoint that proxies requests for the slackbot Lambda function.
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -16,7 +20,7 @@ This module will deploy an API endpoint that proxies requests for the slackbot L
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | passthrough\_lambda\_name | Name of the lambda function that API gateway will pass information to | `string` | n/a | yes |
 | target\_api\_gw | Name of the api to add the lambda proxy endpoint to | `string` | n/a | yes |
 | project\_name | (Optional) Name of the project | `string` | `"ldap-maintainer"` | no |

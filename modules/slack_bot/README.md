@@ -13,6 +13,10 @@ This module will deploy a Lambda function with an API Gateway endpoint configure
 *help|?*: this help menu
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -23,7 +27,7 @@ This module will deploy a Lambda function with an API Gateway endpoint configure
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | step\_function\_arn | State machine ARN that the api gateway is able to perform actions against | `string` | n/a | yes |
 | target\_api\_gw | Name of the api to add the lambda proxy to | `string` | n/a | yes |

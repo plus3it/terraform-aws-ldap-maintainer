@@ -7,6 +7,10 @@ Lambda that updates slack and a target step function
 This function's sole purpose is to format the results of the [LDAP Query](/modules/lambda_functions/ldap_query) function combined with this project's step function [task token](https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-wait-token) into an actionable message.
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -17,7 +21,7 @@ This function's sole purpose is to format the results of the [LDAP Query](/modul
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | invoke\_base\_url | Base URL of the api gateway endpoint to pass to slack for approve/deny actions | `string` | n/a | yes |
 | sfn\_activity\_arn | ARN of the state machine activity to query for a taskToken | `string` | n/a | yes |
