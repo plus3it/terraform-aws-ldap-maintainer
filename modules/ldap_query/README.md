@@ -18,6 +18,10 @@ When provided an event with the `disable` action this function will:
 2. Disable objects that have not have their passwords updated within the last 120 days.
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -28,7 +32,7 @@ When provided an event with the `disable` action this function will:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | domain\_base\_dn | Distinguished name of the domain | `string` | n/a | yes |
 | ldaps\_url | LDAPS URL of the target domain | `string` | n/a | yes |

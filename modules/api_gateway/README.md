@@ -7,6 +7,10 @@ terraform-aws-ldap-maintainer API Gateway module
 This module will deploy an API endpoint with invoke permissions to a target lambda function. This lambda function will then be executed asynchronously when the endpoint is triggered. Currently this endpoint has only been configured to respond to slack events.
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -16,7 +20,7 @@ This module will deploy an API endpoint with invoke permissions to a target lamb
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | async\_lambda\_name | Name of the lambda function that API gateway will invoke asynchronously | `string` | n/a | yes |
 | project\_name | (Optional) Name of the project | `string` | `"ldap-maintainer"` | no |
 | stage\_name | Name of the api stage to deploy | `string` | `"ldapmaintainer"` | no |

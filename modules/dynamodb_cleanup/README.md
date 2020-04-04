@@ -3,6 +3,10 @@
 Lambda function to facilitate removing disabled users' email(s) from a target dynamoDB table
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +16,7 @@ Lambda function to facilitate removing disabled users' email(s) from a target dy
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | dynamodb\_table\_arn | ARN of the dynamodb table to perform maintenance actions against | `string` | n/a | yes |
 | dynamodb\_table\_name | Name of the dynamodb to take actions against | `string` | n/a | yes |

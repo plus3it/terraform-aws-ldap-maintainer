@@ -14,6 +14,10 @@ This module will automate the creation of lambda layers for python projects prov
 As currently implemented this project is designed to support layer creation for the [python-ldap](https://www.python-ldap.org/en/latest/reference/ldap.html) project
 
 <!-- BEGIN TFDOCS -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -24,7 +28,7 @@ As currently implemented this project is designed to support layer creation for 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | layer\_description | Description to associate with the resulting layer | `string` | n/a | yes |
 | layer\_name | Name to associate with the resulting layer | `string` | n/a | yes |
 | additional\_docker\_bindmounts | (Optional) List of additional bind mounts to provide the layer creation docker image | `list(string)` | `[]` | no |
