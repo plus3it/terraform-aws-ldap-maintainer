@@ -172,22 +172,19 @@ class LdapMaintainer:
         stale_users = {f"{self.days_since_pwdlastset}": []}
         users = self.get_users()
         for user_obj in users:
-            try:
-                log.debug("processing user: %s", user_obj)
-                ft = user_obj["pwdLastSet"][0]
-                desc = user_obj["description"][0]
-                days = self.get_days_since_pwdlastset(ft)
-                user = {
-                    "name": user_obj["cn"][0],
-                    "email": user_obj["mail"][0],
-                    "dn": user_obj["distinguishedName"][0],
-                    "days_since_last_pwd_change": days,
-                }
-                log.debug("got user: %s", user)
-                if days >= self.days_since_pwdlastset or desc == "***TEST***":
-                    stale_users[f"{self.days_since_pwdlastset}"].append(user)
-            except KeyError:
-                continue
+            log.debug("processing user: %s", user_obj)
+            ft = user_obj.get("pwdLastSet", [False]).pop()
+            desc = user_obj.get("description", [False]).pop()
+            days = self.get_days_since_pwdlastset(ft)
+            user = {
+                "name": user_obj.get("cn", [False]).pop(),
+                "email": user_obj.get("mail", [False]).pop(),
+                "dn": user_obj.get("distinguishedName", [False]).pop(),
+                "days_since_last_pwd_change": days,
+            }
+            if days >= self.days_since_pwdlastset or desc == "***TEST***":
+                log.info("got stale user: %s", user)
+                stale_users[f"{self.days_since_pwdlastset}"].append(user)
         log.debug("retrieved the following stale users: %s", stale_users)
         return stale_users
 
