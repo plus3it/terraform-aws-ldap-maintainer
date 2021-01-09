@@ -1,3 +1,4 @@
+# pylint: skip-file
 import boto3
 import collections
 import dateutil.tz

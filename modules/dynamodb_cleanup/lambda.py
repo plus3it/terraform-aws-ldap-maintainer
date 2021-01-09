@@ -5,11 +5,12 @@ Removes specified user emails from a target DynamoDB table
 Returns:
     null
 """
-import boto3
 import collections
 import json
 import logging
 import os
+
+import boto3
 
 s3 = boto3.client("s3")
 
@@ -29,15 +30,15 @@ LOG_LEVELS = collections.defaultdict(
 # different logging config
 root = logging.getLogger()
 if root.handlers:
-    for handler in root.handlers:
-        root.removeHandler(handler)
+    for log_handler in root.handlers:
+        root.removeHandler(log_handler)
 
-log_file_name = ""
+LOG_FILE_NAME = ""
 if not os.environ.get("AWS_EXECUTION_ENV"):
-    log_file_name = "dynamodb_cleanup.log"
+    LOG_FILE_NAME = "dynamodb_cleanup.log"
 
 logging.basicConfig(
-    filename=log_file_name,
+    filename=LOG_FILE_NAME,
     format="%(asctime)s.%(msecs)03dZ [%(name)s][%(levelname)-5s]: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
     level=LOG_LEVELS[os.environ.get("LOG_LEVEL", "").lower()],
@@ -51,14 +52,14 @@ table = dynamodb_resource.Table(os.environ["DYNAMODB_TABLE"])
 
 
 def scan_table(scan_attributes):
-    """
-    Scan the target table by attribute list.
-    """
-    return table.scan(AttributesToGet=scan_attributes,)
+    """Scan the target table by attribute list."""
+    return table.scan(
+        AttributesToGet=scan_attributes,
+    )
 
 
 def modify_scan_results(email_address, scan_results):
-    """Modifies DynamoDB scan results to remove the provided email address.
+    """Modify DynamoDB scan results to remove the provided email address.
 
     Arguments:
         email_address {string} -- email address to be removed from DynamoDB
@@ -85,7 +86,7 @@ def modify_scan_results(email_address, scan_results):
 
 
 def apply_scan_results(updated_scan_results):
-    """Applies the updated DynamoDB scan results
+    """Apply the updated DynamoDB scan results.
 
     Arguments:
         updated_scan_results {dictionary} -- Json blob containing
@@ -103,6 +104,7 @@ def apply_scan_results(updated_scan_results):
 
 
 def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
+    """Retrieve S3 object contents."""
     return json.loads(
         s3.get_object(Bucket=bucket, Key=s3_obj)["Body"].read().decode("utf-8")
     )
@@ -112,18 +114,21 @@ def retrieve_s3_object_contents(s3_obj, bucket=os.environ["ARTIFACTS_BUCKET"]):
 # otherwise this task will be very 'chatty'
 # https://realpython.com/python-thinking-recursively/
 def remove_user(email, scan_results):
+    """Remove user from scan results."""
     updated_scan_results = modify_scan_results(email, scan_results)
     apply_scan_results(updated_scan_results)
 
 
 def remove_users_in_list(users):
+    """Remove users in list."""
     scan_attributes = ["account_name", "email_distros"]
     scan_results = scan_table(scan_attributes)
     for user in users:
         remove_user(user["email"], scan_results)
 
 
-def handler(event, context):
+def handler(event, context):  # pylint: disable=unused-argument
+    """Entrypoint for lambda handler."""
     log.debug("Received event: %s", event)
     if event["action"] == "remove":
         days_since_pwdlastset = os.environ("DAYS_SINCE_PWDLASTSET")
@@ -133,3 +138,4 @@ def handler(event, context):
         remove_users_in_list(users)
         log.info("Successfully removed the stale users from dynamodb")
         return event
+    return None
