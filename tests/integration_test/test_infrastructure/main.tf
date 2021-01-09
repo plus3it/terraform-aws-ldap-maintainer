@@ -201,7 +201,7 @@ locals {
 data "template_file" "test" {
   count = var.enable_dynamodb ? 1 : 0
 
-  template = "${file("${path.module}/table_layout.json.tpl")}"
+  template = file("${path.module}/table_layout.json.tpl")
   vars = {
     account_name = "test123"
     distro_list  = "${local.distro_list_string}"

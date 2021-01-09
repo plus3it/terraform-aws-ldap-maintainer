@@ -1,8 +1,8 @@
+# pylint: skip-file
 """Python module to perform tasks against a target LDAP database
 
 Requires the credentials of a user with domain admin privileges
 """
-import boto3
 import collections
 import fnmatch
 import json
@@ -10,6 +10,7 @@ import logging
 import os
 from datetime import datetime
 
+import boto3
 import ldap
 import ldap.asyncsearch
 from jinja2 import Environment, FileSystemLoader
@@ -31,15 +32,15 @@ LOG_LEVELS = collections.defaultdict(
 # different logging config
 root = logging.getLogger()
 if root.handlers:
-    for handler in root.handlers:
-        root.removeHandler(handler)
+    for log_handler in root.handlers:
+        root.removeHandler(log_handler)
 
-log_file_name = ""
+LOG_FILE_NAME = ""
 if not os.environ.get("AWS_EXECUTION_ENV"):
-    log_file_name = "ldap_query.log"
+    LOG_FILE_NAME = "ldap_query.log"
 
 logging.basicConfig(
-    filename=log_file_name,
+    filename=LOG_FILE_NAME,
     format="%(asctime)s.%(msecs)03dZ [%(name)s][%(levelname)-5s]: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
     level=LOG_LEVELS[os.environ.get("LOG_LEVEL", "").lower()],
@@ -136,7 +137,7 @@ class LdapMaintainer:
         for user_obj in self.users_to_disable:
             disable_user = [
                 (ldap.MOD_REPLACE, "userAccountControl", [b"514"])
-            ]  # https://support.microsoft.com/en-us/help/305144/how-to-use-useraccountcontrol-to-manipulate-user-account-properties
+            ]  # https://support.microsoft.com/en-us/help/305144/how-to-use-useraccountcontrol-to-manipulate-user-account-properties  # pylint: disable=line-too-long
             update_description = [
                 (ldap.MOD_REPLACE, "description", [d.encode("utf-8")])
             ]
@@ -229,7 +230,7 @@ class LdapMaintainer:
     def filetime_to_dt(ft):
         """
         Convert windowsfiletime to python datetime.
-        ref: https://gist.github.com/Mostafa-Hamdy-Elgiar/9714475f1b3bc224ea063af81566d873  # noqa: E501
+        ref: https://gist.github.com/Mostafa-Hamdy-Elgiar/9714475f1b3bc224ea063af81566d873  # noqa: E501  # pylint: disable=line-too-long
         """
         # January 1, 1970 as MS file time
         epoch_as_filetime = 116444736000000000
@@ -394,7 +395,7 @@ def disable_handler(ldap_config, event):
     return event
 
 
-def handler(event, context):
+def handler(event, context):  # pylint: disable=unused-argument
     """
     expected event:
     {

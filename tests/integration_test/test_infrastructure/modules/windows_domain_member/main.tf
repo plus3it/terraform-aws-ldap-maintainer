@@ -3,7 +3,7 @@ locals {
 
   specified_cidr_blocks = local.callers_ip
   public_ip             = "${chomp(data.http.ip.body)}/32"
-  allow_inbound         = "${compact(distinct(concat(list(local.public_ip), var.additional_ips_allow_inbound)))}"
+  allow_inbound         = compact(distinct(concat(list(local.public_ip), var.additional_ips_allow_inbound)))
 }
 
 resource "aws_security_group" "this" {

@@ -1,3 +1,4 @@
+# pylint: skip-file
 """
 Slack chat-bot Lambda handler.
 """

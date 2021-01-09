@@ -1,0 +1,37 @@
+version: 2
+updates:
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: docker
+  directory: "/modules/create_layer/bin"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: gomod
+  directory: "/tests"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/modules/ldap_query"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/tests/integration_test/test_infrastructure/modules/populate_ldap"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/modules/slack_notifier"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: terraform
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
