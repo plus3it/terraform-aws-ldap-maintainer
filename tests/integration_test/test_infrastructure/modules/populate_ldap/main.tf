@@ -32,7 +32,7 @@ resource "aws_security_group" "lambda" {
 module "lambda_layer" {
   source = "../../../../../modules/create_layer"
 
-  target_lambda_path = "${abspath(path.module)}"
+  target_lambda_path = abspath(path.module)
   layer_name         = "python-ldap-${random_string.this.result}"
   layer_description  = "Contains python-ldap and its dependencies"
 
