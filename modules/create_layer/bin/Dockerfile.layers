@@ -1,4 +1,4 @@
-FROM amazonlinux@sha256:95a67046bfeb9fe216d8d48c72db25dd7dc83946ad3b5e57b58496b365441883
+FROM amazonlinux@sha256:1c5213077930ebbd35b51bece063ffb31f47df9c6fb71b7248944785c77ba772
 
 RUN yum install zip python3 python-devel python3-devel openldap-devel gcc -y && \
   python3 -m pip install --no-cache-dir --upgrade pip && \
