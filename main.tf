@@ -221,6 +221,7 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "${path.module}/templates/ldap_maintainer_stepfunction.tpl",
     {
       ldap_query_lambda_name     = module.ldap_query_lambda.function_arn
+      manual_approval_timeout    = var.manual_approval_timeout
       slack_notifier_lambda_name = module.slack_notifier.function_name
       additional_cleanup_tasks   = local.additional_cleanup_tasks
   })

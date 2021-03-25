@@ -96,3 +96,9 @@ variable "days_since_pwdlastset" {
   type        = number
   default     = 120
 }
+
+variable "manual_approval_timeout" {
+  description = "Timeout in seconds for the manual approval step."
+  type        = number
+  default     = 3600
+}
