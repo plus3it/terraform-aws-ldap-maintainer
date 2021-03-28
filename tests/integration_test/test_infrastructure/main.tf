@@ -204,7 +204,7 @@ data "template_file" "test" {
   template = file("${path.module}/table_layout.json.tpl")
   vars = {
     account_name = "test123"
-    distro_list  = "${local.distro_list_string}"
+    distro_list  = local.distro_list_string
   }
 }
 

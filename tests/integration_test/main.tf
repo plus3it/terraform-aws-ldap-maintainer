@@ -25,8 +25,11 @@ module "ldap_maintainer" {
   svc_user_dn             = module.test_infrastructure.svc_user_dn
   svc_user_pwd_ssm_key    = module.test_infrastructure.svc_user_pwd_ssm_key
   vpc_id                  = module.test_infrastructure.vpc_id
+
+  hands_off_accounts      = var.hands_off_accounts
+  manual_approval_timeout = var.manual_approval_timeout
+  project_name            = var.project_name
   slack_channel_id        = var.slack_channel_id
   slack_api_token         = var.slack_api_token
   slack_signing_secret    = var.slack_signing_secret
-  hands_off_accounts      = var.hands_off_accounts
 }

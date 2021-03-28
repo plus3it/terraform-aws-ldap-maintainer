@@ -62,8 +62,9 @@ module "lambda" {
 module "api_gateway" {
   source = "./api_gateway"
 
-  passthrough_lambda_name = module.lambda.function_name
-  project_name            = var.project_name
-  tags                    = var.tags
-  target_api_gw           = var.target_api_gw
+  passthrough_lambda             = module.lambda
+  project_name                   = var.project_name
+  tags                           = var.tags
+  target_api_gw_id               = var.target_api_gw_id
+  target_api_gw_root_resource_id = var.target_api_gw_root_resource_id
 }

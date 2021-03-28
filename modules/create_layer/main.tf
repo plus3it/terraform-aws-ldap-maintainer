@@ -20,7 +20,7 @@ locals {
 resource "null_resource" "docker_image_validate" {
   # re-run if the specified dockerfile changes
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
@@ -63,6 +63,12 @@ resource "null_resource" "publish_layer" {
     null_resource.create_layer
   ]
 
+  triggers = {
+    destroy_stdout = "rm \"${local.module_path}/stdout.${null_resource.create_layer.id}\""
+    destroy_stderr = "rm \"${local.module_path}/stderr.${null_resource.create_layer.id}\""
+    destroy_status = "rm \"${local.module_path}/exitstatus.${null_resource.create_layer.id}\""
+  }
+
   provisioner "local-exec" {
     when        = create
     command     = "bin/publish-layer.sh 2>\"${local.module_path}/stderr.${null_resource.create_layer.id}\" >\"${local.module_path}/stdout.${null_resource.create_layer.id}\"; echo $? >\"${local.module_path}/exitstatus.${null_resource.create_layer.id}\""
@@ -78,19 +84,19 @@ resource "null_resource" "publish_layer" {
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${local.module_path}/stdout.${null_resource.create_layer.id}\""
+    command    = self.triggers.destroy_stdout
     on_failure = continue
   }
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${local.module_path}/stderr.${null_resource.create_layer.id}\""
+    command    = self.triggers.destroy_stderr
     on_failure = continue
   }
 
   provisioner "local-exec" {
     when       = destroy
-    command    = "rm \"${local.module_path}/exitstatus.${null_resource.create_layer.id}\""
+    command    = self.triggers.destroy_status
     on_failure = continue
   }
 }
@@ -137,12 +143,16 @@ resource "null_resource" "layer_cleanup" {
     null_resource.contents
   ]
 
+  triggers = {
+    layer_arn = chomp(null_resource.contents.triggers["stdout"])
+  }
+
   provisioner "local-exec" {
     when        = destroy
     command     = "bin/delete-layer.sh"
     working_dir = path.module
     environment = {
-      LAYER_ARN = chomp(null_resource.contents.triggers["stdout"])
+      LAYER_ARN = self.triggers.layer_arn
     }
   }
 }
@@ -150,8 +160,12 @@ resource "null_resource" "layer_cleanup" {
 # destroy the docker image when terraform destroy is run
 resource "null_resource" "docker_image_cleanup" {
 
+  triggers = {
+    remove_image = "docker rmi $(docker images '${local.docker_image_name}' -q) || echo 'image '${local.docker_image_name}' does not exist'"
+  }
+
   provisioner "local-exec" {
     when    = destroy
-    command = "docker rmi $(docker images '${local.docker_image_name}' -q) || echo 'image '${local.docker_image_name}' does not exist'"
+    command = self.triggers.remove_image
   }
 }
