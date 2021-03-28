@@ -83,6 +83,7 @@ No requirements.
 | hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | `list(string)` | `[]` | no |
 | log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
 | maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | `string` | `"cron(0 8 1 * ? *)"` | no |
+| manual\_approval\_timeout | Timeout in seconds for the manual approval step. | `number` | `3600` | no |
 | project\_name | Name of the project | `string` | `"ldap-maintainer"` | no |
 | tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
 
@@ -90,6 +91,7 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
+| python\_ldap\_layer\_arn | ARN of the python-ldap layer |
 | slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
 
 <!-- END TFDOCS -->

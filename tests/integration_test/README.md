@@ -28,6 +28,7 @@ No provider.
 | filter\_prefixes | List of user name prefixes to filter out of the user search results | `list(string)` | `[]` | no |
 | hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | `list(string)` | `[]` | no |
 | instance\_profile | Name of the instance profile to attach to the provisioned instance | `string` | `""` | no |
+| manual\_approval\_timeout | Timeout in seconds for the manual approval step. | `number` | `3600` | no |
 | project\_name | Name of the project | `string` | `"ldapmaint-test"` | no |
 | slack\_signing\_secret | The slack application's signing secret | `string` | `""` | no |
 
@@ -35,6 +36,7 @@ No provider.
 
 | Name | Description |
 |------|-------------|
+| domain\_admin\_password | n/a |
 | domain\_member\_public\_ip | IP address of the windows instance used to manage AD. |
 | slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
 
