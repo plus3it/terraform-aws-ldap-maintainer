@@ -30,6 +30,11 @@ variable "target_zone_name" {
   description = "Name of the zone in which to create the simplead DNS record"
 }
 
+variable "python_ldap_layer_arn" {
+  description = "ARN of the python-ldap layer"
+  type        = string
+}
+
 variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16"

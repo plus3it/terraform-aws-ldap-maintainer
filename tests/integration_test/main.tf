@@ -12,6 +12,7 @@ module "test_infrastructure" {
   instance_profile             = var.instance_profile
   filter_prefixes              = var.filter_prefixes
   additional_test_users        = var.additional_test_users
+  python_ldap_layer_arn        = module.ldap_maintainer.python_ldap_layer_arn
 }
 
 module "ldap_maintainer" {

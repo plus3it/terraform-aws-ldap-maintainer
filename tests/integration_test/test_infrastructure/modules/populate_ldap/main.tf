@@ -29,16 +29,6 @@ resource "aws_security_group" "lambda" {
   }
 }
 
-module "lambda_layer" {
-  source = "../../../../../modules/create_layer"
-
-  target_lambda_path = abspath(path.module)
-  layer_name         = "python-ldap-${random_string.this.result}"
-  layer_description  = "Contains python-ldap and its dependencies"
-
-  compatible_runtimes = ["python3.7"]
-}
-
 module "lambda" {
   source = "github.com/claranet/terraform-aws-lambda"
 
@@ -67,5 +57,5 @@ module "lambda" {
     security_group_ids = [aws_security_group.lambda.id]
   }
 
-  layers = [module.lambda_layer.layer_arn]
+  layers = [var.python_ldap_layer_arn]
 }

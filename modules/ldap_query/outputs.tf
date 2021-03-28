@@ -27,3 +27,8 @@ output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = module.lambda.role_name
 }
+
+output "python_ldap_layer_arn" {
+  description = "ARN of the python-ldap layer"
+  value       = module.lambda_layer.layer_arn
+}
