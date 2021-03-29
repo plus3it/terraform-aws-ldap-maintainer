@@ -38,6 +38,7 @@ No provider.
 |------|-------------|
 | domain\_admin\_password | n/a |
 | domain\_member\_public\_ip | IP address of the windows instance used to manage AD. |
-| slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
+| slack\_bot\_listener\_endpoint | Endpoint to use for the slack app's Slash Command Request URL |
+| slack\_event\_listener\_endpoint | Endpoint to use for the slack app's Interactivity Request URL |
 
 <!-- END TFDOCS -->

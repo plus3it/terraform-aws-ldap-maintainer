@@ -28,6 +28,7 @@ module "ldap_maintainer" {
   vpc_id                  = module.test_infrastructure.vpc_id
 
   hands_off_accounts      = var.hands_off_accounts
+  log_level               = "Debug"
   manual_approval_timeout = var.manual_approval_timeout
   project_name            = var.project_name
   slack_channel_id        = var.slack_channel_id

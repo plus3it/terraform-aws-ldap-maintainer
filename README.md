@@ -92,6 +92,7 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | python\_ldap\_layer\_arn | ARN of the python-ldap layer |
-| slack\_listener\_endpoint | API endpoint to use as the slack application's Interactive Components request URL |
+| slack\_bot\_listener\_endpoint | Endpoint to use for the slack app's Slash Command Request URL |
+| slack\_event\_listener\_endpoint | Endpoint to use for the slack app's Interactivity Request URL |
 
 <!-- END TFDOCS -->
