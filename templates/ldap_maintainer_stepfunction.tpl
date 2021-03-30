@@ -138,7 +138,12 @@
           "message_to_slack": "An error occurred!"
         }
       },
-      "End": true
+      "Next": "error"
+    },
+
+    "error": {
+      "Type": "Fail",
+      "Cause": "Something failed!"
     }
   }
 }
