@@ -29,20 +29,29 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
     **Note:** Refer to the following article to scope this permission to a single user: [Delegate the Enable/Disable Accounts Permission in Active Directory](https://thebackroomtech.com/2009/07/01/howto-delegate-the-enabledisable-accounts-permission-in-active-directory/)
 
 3. Populate an *encrypted* ssm parameter with this new user's password and use the key value as the input for `svc_user_pwd_ssm_key` variable.
-4. Generate the lambda layers for this project by running `bin/generate-layers.sh` use the `-r` option to generate the layers via docker or `-c` to create them locally.
-5. Register a new slack application at https://api.slack.com and capture the required inputs:
-    - the Slack signing secret: Located under the slack application Settings > Basic Information
-    - the Bot User OAuth Access Token: Located under the slack application Settings > Install App > Bot User OAuth Access Token
+4. Register a new slack application at https://api.slack.com and capture the "Slack Signing Secret" from the "Basic Information" section of the app's Settings
+
+    **Note:** For each instance of this module, you will almost certainly need
+    a new Slack app. This is because the API Gateway endpoints must be configured
+    within the Slack app's settings, and only a single Interactivity Request URL
+    can be specified per Slack app. Each instance of this module will have a different
+    Interactivity Request URL.
+
+5. Grant Scopes to the app, and capture the OAuth Token:
+      1. Navigate to Features > OAuth & Permissions
+      2. Under Scopes, select `command`
+      3. Select "Install app" to your workspace
+      4. Save off the "Bot User OAuth Token" and use it and the "Slack Signing Secret" in the next step
 6. Configure your `terraform.tfvars` with the required inputs.
 7. Run `terraform init/apply`
-8. Using the provided output url, enable slack events for your slack integration
+8. Enable Interactivity and a Slash Command your slack integration:
       1. Go to https://api.slack.com
       2. Find your app
-      3. Navigate to Features > Event Subscriptions > Enable Events
-      4. Enter the api gateway url created in the previous step
+      3. Navigate to Features > Interactivity & Shortcuts > Interactivity
+      4. Enter the output value `slack_event_listener_endpoint` from the terraform apply for the Request URL
       5. Navigate to Features > Slash Commands
       6. Create a new command called `/ldap`
-      7. Add the slackbot request url to this command
+      7. Use the output value `slack_bot_listener_endpoint` for the Request URL
 9. Test the integration from slack by calling `/ldap run` or manually by triggering the LDAP maintenance step function with the following payload: `{"action": "query" }`
 
 ## References
