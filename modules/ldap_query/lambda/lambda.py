@@ -287,6 +287,7 @@ def create_html_table(**content):
     template_contents = {
         "table_headers": get_html_table_headers(**content),
         "user_list": content["users"],
+        "days_since_pwdlastset": content["days_since_pwdlastset"],
     }
     artifact = {}
     artifact["content"] = render_template(**template_contents)
