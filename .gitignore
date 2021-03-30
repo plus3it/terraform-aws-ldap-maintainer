@@ -35,3 +35,6 @@ stdout.*
 
 # lambda packaging
 builds
+
+# terratest packaging
+tests/go.*
