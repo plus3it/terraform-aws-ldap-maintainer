@@ -30,5 +30,5 @@ output "role_name" {
 
 output "python_ldap_layer_arn" {
   description = "ARN of the python-ldap layer"
-  value       = module.lambda_layer.layer_arn
+  value       = module.lambda_layer.this_lambda_layer_arn
 }

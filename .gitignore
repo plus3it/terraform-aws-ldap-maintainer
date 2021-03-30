@@ -32,3 +32,6 @@ tardigrade-ci/
 exitstatus.*
 stderr.*
 stdout.*
+
+# lambda packaging
+builds

@@ -55,13 +55,29 @@ resource "aws_security_group" "lambda" {
 }
 
 module "lambda_layer" {
-  source = "../create_layer"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v1.44.0"
 
-  target_lambda_path = abspath(path.module)
-  layer_name         = "python-ldap-${random_string.this.result}"
-  layer_description  = "Contains python-ldap and its dependencies"
+  create_layer = true
 
-  compatible_runtimes = ["python3.7"]
+  description = "Contains python-ldap and its dependencies"
+  layer_name  = "python-ldap-${random_string.this.result}"
+
+  build_in_docker = true
+  docker_file     = "${path.module}/layer/Dockerfile"
+  docker_image    = "python-ldap-${random_string.this.result}"
+  runtime         = "python3"
+
+  source_path = [
+    {
+      pip_requirements = "${path.module}/layer/requirements.txt"
+      prefix_in_zip    = "python"
+    }
+  ]
+
+  compatible_runtimes = [
+    "python3.7",
+    "python3.8"
+  ]
 }
 
 locals {
@@ -106,5 +122,5 @@ module "lambda" {
     security_group_ids = [aws_security_group.lambda.id]
   }
 
-  layers = [module.lambda_layer.layer_arn]
+  layers = [module.lambda_layer.this_lambda_layer_arn]
 }
