@@ -39,8 +39,13 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "target_api_gw" {
-  description = "Name of the api to add the lambda proxy to"
+variable "target_api_gw_id" {
+  description = "ID of the api to add the lambda proxy endpoint to"
+  type        = string
+}
+
+variable "target_api_gw_root_resource_id" {
+  description = "Root resource ID of the api gateway resource to add the lambda proxy endpoint to"
   type        = string
 }
 

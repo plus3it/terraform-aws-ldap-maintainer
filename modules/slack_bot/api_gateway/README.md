@@ -21,8 +21,9 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| passthrough\_lambda\_name | Name of the lambda function that API gateway will pass information to | `string` | n/a | yes |
-| target\_api\_gw | Name of the api to add the lambda proxy endpoint to | `string` | n/a | yes |
+| passthrough\_lambda | Object of attributes for the lambda function that API gateway will pass information to | <pre>object({<br>    function_arn        = string<br>    function_invoke_arn = string<br>    function_name       = string<br>  })</pre> | n/a | yes |
+| target\_api\_gw\_id | ID of the api to add the lambda proxy endpoint to | `string` | n/a | yes |
+| target\_api\_gw\_root\_resource\_id | Root resource ID of the api gateway resource to add the lambda proxy endpoint to | `string` | n/a | yes |
 | project\_name | (Optional) Name of the project | `string` | `"ldap-maintainer"` | no |
 | stage\_name | Name of the api stage to deploy | `string` | `"ldapmaintainer"` | no |
 | tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |

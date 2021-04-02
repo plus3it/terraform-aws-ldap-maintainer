@@ -25,5 +25,16 @@
 tardigrade-ci/
 .tardigrade-ci
 
-# eclint
-.git/
+# terraform lock file
+.terraform.lock.hcl
+
+# temp files
+exitstatus.*
+stderr.*
+stdout.*
+
+# lambda packaging
+builds
+
+# terratest packaging
+tests/go.*

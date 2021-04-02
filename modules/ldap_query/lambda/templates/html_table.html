@@ -42,7 +42,7 @@
 <div class="wrapper">
 <table id="staleusers" class="mdl-data-table" width="100%">
         <thead>
-            <tr>{% for key in user_list['120'][0] %}{% if key != "dn" %}
+            <tr>{% for key in user_list[days_since_pwdlastset][0] %}{% if key != "dn" %}
                 <th>{{key}}</th>{% endif %}{% endfor %}
             </tr>
         </thead>
@@ -54,7 +54,7 @@
           </tr>{% endfor %}{% endfor %}
         </tbody>
         <tfoot>
-            <tr>{% for key in user_list['120'][0] %}{% if key != "dn" %}
+            <tr>{% for key in user_list[days_since_pwdlastset][0] %}{% if key != "dn" %}
                 <th>{{key}}</th>{% endif %}{% endfor %}
             </tr>
         </tfoot>

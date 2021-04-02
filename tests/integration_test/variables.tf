@@ -81,3 +81,9 @@ variable "hands_off_accounts" {
   description = "(Optional) List of user names to filter out of the user search results"
   type        = list(string)
 }
+
+variable "manual_approval_timeout" {
+  description = "Timeout in seconds for the manual approval step."
+  type        = number
+  default     = 3600
+}

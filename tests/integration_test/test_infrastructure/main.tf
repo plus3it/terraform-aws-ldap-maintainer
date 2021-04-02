@@ -204,7 +204,7 @@ data "template_file" "test" {
   template = file("${path.module}/table_layout.json.tpl")
   vars = {
     account_name = "test123"
-    distro_list  = "${local.distro_list_string}"
+    distro_list  = local.distro_list_string
   }
 }
 
@@ -228,11 +228,12 @@ locals {
 module "populate_ldap" {
   source = "./modules/populate_ldap"
 
-  ldaps_url       = "ldaps://${aws_lb.ldaps.dns_name}"
-  domain_base_dn  = local.dn
-  svc_user_dn     = "CN=Administrator,CN=Users,${local.dn}"
-  svc_user_pwd    = random_string.password.result
-  vpc_id          = module.vpc.vpc_id
-  test_users      = concat(local.test_users, var.additional_test_users)
-  filter_prefixes = var.filter_prefixes
+  ldaps_url             = "ldaps://${aws_lb.ldaps.dns_name}"
+  domain_base_dn        = local.dn
+  svc_user_dn           = "CN=Administrator,CN=Users,${local.dn}"
+  svc_user_pwd          = random_string.password.result
+  vpc_id                = module.vpc.vpc_id
+  test_users            = concat(local.test_users, var.additional_test_users)
+  filter_prefixes       = var.filter_prefixes
+  python_ldap_layer_arn = var.python_ldap_layer_arn
 }

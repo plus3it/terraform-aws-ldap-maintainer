@@ -68,7 +68,7 @@ class LdapMaintainer:
     def add_users(self, user_list):
         con = self.connect()
         user_count = 0
-        log.info("Received input lit of %s users", len(user_list))
+        log.info("Received input list of %s users", len(user_list))
         for user_obj in user_list:
             try:
                 con.add_s(user_obj["dn"], ldap.modlist.addModlist(user_obj["user"]))
@@ -101,7 +101,7 @@ class LdapMaintainer:
 
     @staticmethod
     def get_random_users(user_list, user_count):
-        return random.sample(user_list, user_count)
+        return random.sample(user_list, min(len(user_list), user_count))
 
     def disable_random_users(self, user_list, user_count):
         con = self.connect()
@@ -184,5 +184,5 @@ def handler(event, context):
     ldap_maint.add_users(all_users)
     # disable 5 random users
     ldap_maint.disable_random_users(standard_users, 5)
-    # label a random 20 users for processing by the ldap mainter lambda
+    # label a random 20 users for processing by the ldap maintainer lambda
     ldap_maint.label_random_users(standard_users, 20)

@@ -52,12 +52,13 @@ module "slack_notifier" {
 module "slack_bot" {
   source = "./modules/slack_bot"
 
-  project_name          = var.project_name
-  step_function_arn     = aws_sfn_state_machine.ldap_maintenance.id
-  target_api_gw         = module.api_gateway.name
-  slack_signing_secret  = var.slack_signing_secret
-  slack_api_token       = var.slack_api_token
-  artifacts_bucket_name = aws_s3_bucket.artifacts.id
+  project_name                   = var.project_name
+  step_function_arn              = aws_sfn_state_machine.ldap_maintenance.id
+  target_api_gw_id               = module.api_gateway.rest_api_deployment.rest_api_id
+  target_api_gw_root_resource_id = module.api_gateway.rest_api.root_resource_id
+  slack_signing_secret           = var.slack_signing_secret
+  slack_api_token                = var.slack_api_token
+  artifacts_bucket_name          = aws_s3_bucket.artifacts.id
 
   log_level = var.log_level
 }
@@ -192,7 +193,7 @@ resource "aws_iam_role" "sfn" {
 
 resource "aws_iam_policy_attachment" "sfn" {
   name       = "${var.project_name}-sfn"
-  roles      = ["${aws_iam_role.sfn.name}"]
+  roles      = [aws_iam_role.sfn.name]
   policy_arn = aws_iam_policy.sfn.arn
 }
 
@@ -221,6 +222,7 @@ resource "aws_sfn_state_machine" "ldap_maintenance" {
     "${path.module}/templates/ldap_maintainer_stepfunction.tpl",
     {
       ldap_query_lambda_name     = module.ldap_query_lambda.function_arn
+      manual_approval_timeout    = var.manual_approval_timeout
       slack_notifier_lambda_name = module.slack_notifier.function_name
       additional_cleanup_tasks   = local.additional_cleanup_tasks
   })
@@ -263,7 +265,7 @@ resource "aws_iam_role" "cwe" {
 
 resource "aws_iam_policy_attachment" "cwe" {
   name       = "${var.project_name}-cwe"
-  roles      = ["${aws_iam_role.cwe.name}"]
+  roles      = [aws_iam_role.cwe.name]
   policy_arn = aws_iam_policy.cwe.arn
 }
 

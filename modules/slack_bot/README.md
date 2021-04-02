@@ -30,7 +30,8 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | artifacts\_bucket\_name | Name of the artifacts bucket | `string` | n/a | yes |
 | step\_function\_arn | State machine ARN that the api gateway is able to perform actions against | `string` | n/a | yes |
-| target\_api\_gw | Name of the api to add the lambda proxy to | `string` | n/a | yes |
+| target\_api\_gw\_id | ID of the api to add the lambda proxy endpoint to | `string` | n/a | yes |
+| target\_api\_gw\_root\_resource\_id | Root resource ID of the api gateway resource to add the lambda proxy endpoint to | `string` | n/a | yes |
 | log\_level | Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
 | project\_name | Name of the project | `string` | `"ldap-maintainer"` | no |
 | slack\_api\_token | API token used by the slack client | `string` | `""` | no |

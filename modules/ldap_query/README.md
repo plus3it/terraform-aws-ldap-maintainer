@@ -53,6 +53,7 @@ No requirements.
 | function\_invoke\_arn | The Invoke ARN of the Lambda function |
 | function\_name | The name of the Lambda function |
 | function\_qualified\_arn | The qualified ARN of the Lambda function |
+| python\_ldap\_layer\_arn | ARN of the python-ldap layer |
 | role\_arn | The ARN of the IAM role created for the Lambda function |
 | role\_name | The name of the IAM role created for the Lambda function |
 

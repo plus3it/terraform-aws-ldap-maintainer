@@ -29,6 +29,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "python_ldap_layer_arn" {
+  description = "ARN of the python-ldap layer"
+  type        = string
+}
+
 variable "log_level" {
   default     = "Info"
   description = "Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical"
