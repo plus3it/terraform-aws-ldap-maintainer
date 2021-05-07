@@ -69,39 +69,48 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
-| random | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_random"></a> [random](#provider\_random) | n/a |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_iam_policy_document.cwe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.cwe_trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sfn](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| domain\_base\_dn | Distinguished name of the domain | `string` | n/a | yes |
-| dynamodb\_table\_arn | ARN of the dynamodb to take actions against | `string` | n/a | yes |
-| dynamodb\_table\_name | Name of the dynamodb to take actions against | `string` | n/a | yes |
-| ldaps\_url | LDAPS URL of the target domain | `string` | n/a | yes |
-| slack\_api\_token | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | `string` | n/a | yes |
-| slack\_channel\_id | Channel that the slack notifier will post to | `string` | n/a | yes |
-| slack\_signing\_secret | The slack application's signing secret. Located under the slack application Settings > Basic Information | `string` | n/a | yes |
-| svc\_user\_dn | Distinguished name of the LDAP Maintenance service account used to manage simpleAD | `string` | n/a | yes |
-| svc\_user\_pwd\_ssm\_key | SSM parameter key that contains the LDAP Maintenance service account password | `string` | n/a | yes |
-| vpc\_id | ID of the VPC hosting the target Simple AD instance | `string` | n/a | yes |
-| additional\_cleanup\_tasks | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | `string` | `""` | no |
-| days\_since\_pwdlastset | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | `number` | `120` | no |
-| enable\_dynamodb\_cleanup | Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed. | `bool` | `true` | no |
-| hands\_off\_accounts | (Optional) List of user names to filter out of the user search results | `list(string)` | `[]` | no |
-| log\_level | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
-| maintenance\_schedule | Periodicity at which to trigger the ldap maintenance step function | `string` | `"cron(0 8 1 * ? *)"` | no |
-| manual\_approval\_timeout | Timeout in seconds for the manual approval step. | `number` | `3600` | no |
-| project\_name | Name of the project | `string` | `"ldap-maintainer"` | no |
-| tags | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
+| <a name="input_domain_base_dn"></a> [domain\_base\_dn](#input\_domain\_base\_dn) | Distinguished name of the domain | `string` | n/a | yes |
+| <a name="input_dynamodb_table_arn"></a> [dynamodb\_table\_arn](#input\_dynamodb\_table\_arn) | ARN of the dynamodb to take actions against | `string` | n/a | yes |
+| <a name="input_dynamodb_table_name"></a> [dynamodb\_table\_name](#input\_dynamodb\_table\_name) | Name of the dynamodb to take actions against | `string` | n/a | yes |
+| <a name="input_ldaps_url"></a> [ldaps\_url](#input\_ldaps\_url) | LDAPS URL of the target domain | `string` | n/a | yes |
+| <a name="input_slack_api_token"></a> [slack\_api\_token](#input\_slack\_api\_token) | API token used by the slack client. Located under the slack application Settings > Install App > Bot User OAuth Access Token | `string` | n/a | yes |
+| <a name="input_slack_channel_id"></a> [slack\_channel\_id](#input\_slack\_channel\_id) | Channel that the slack notifier will post to | `string` | n/a | yes |
+| <a name="input_slack_signing_secret"></a> [slack\_signing\_secret](#input\_slack\_signing\_secret) | The slack application's signing secret. Located under the slack application Settings > Basic Information | `string` | n/a | yes |
+| <a name="input_svc_user_dn"></a> [svc\_user\_dn](#input\_svc\_user\_dn) | Distinguished name of the LDAP Maintenance service account used to manage simpleAD | `string` | n/a | yes |
+| <a name="input_svc_user_pwd_ssm_key"></a> [svc\_user\_pwd\_ssm\_key](#input\_svc\_user\_pwd\_ssm\_key) | SSM parameter key that contains the LDAP Maintenance service account password | `string` | n/a | yes |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC hosting the target Simple AD instance | `string` | n/a | yes |
+| <a name="input_additional_cleanup_tasks"></a> [additional\_cleanup\_tasks](#input\_additional\_cleanup\_tasks) | (Optional) List of step function tasks to execute in parallel once the cleanup action has been approved. | `string` | `""` | no |
+| <a name="input_days_since_pwdlastset"></a> [days\_since\_pwdlastset](#input\_days\_since\_pwdlastset) | Number of days since the pwdLastSet ldap attribute has been updated. This metric is used to disable the target ldap object. | `number` | `120` | no |
+| <a name="input_enable_dynamodb_cleanup"></a> [enable\_dynamodb\_cleanup](#input\_enable\_dynamodb\_cleanup) | Controls wether to enable the dynamodb cleanup resources. The lambda function and supporting resources will still be deployed. | `bool` | `true` | no |
+| <a name="input_hands_off_accounts"></a> [hands\_off\_accounts](#input\_hands\_off\_accounts) | (Optional) List of user names to filter out of the user search results | `list(string)` | `[]` | no |
+| <a name="input_log_level"></a> [log\_level](#input\_log\_level) | (Optional) Log level of the lambda output, one of: Debug, Info, Warning, Error, or Critical | `string` | `"Info"` | no |
+| <a name="input_maintenance_schedule"></a> [maintenance\_schedule](#input\_maintenance\_schedule) | Periodicity at which to trigger the ldap maintenance step function | `string` | `"cron(0 8 1 * ? *)"` | no |
+| <a name="input_manual_approval_timeout"></a> [manual\_approval\_timeout](#input\_manual\_approval\_timeout) | Timeout in seconds for the manual approval step. | `number` | `3600` | no |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | Name of the project | `string` | `"ldap-maintainer"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to assign to this module's resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| python\_ldap\_layer\_arn | ARN of the python-ldap layer |
-| slack\_bot\_listener\_endpoint | Endpoint to use for the slack app's Slash Command Request URL |
-| slack\_event\_listener\_endpoint | Endpoint to use for the slack app's Interactivity Request URL |
+| <a name="output_python_ldap_layer_arn"></a> [python\_ldap\_layer\_arn](#output\_python\_ldap\_layer\_arn) | ARN of the python-ldap layer |
+| <a name="output_slack_bot_listener_endpoint"></a> [slack\_bot\_listener\_endpoint](#output\_slack\_bot\_listener\_endpoint) | Endpoint to use for the slack app's Slash Command Request URL |
+| <a name="output_slack_event_listener_endpoint"></a> [slack\_event\_listener\_endpoint](#output\_slack\_event\_listener\_endpoint) | Endpoint to use for the slack app's Interactivity Request URL |
 
 <!-- END TFDOCS -->
