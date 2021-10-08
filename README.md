@@ -54,16 +54,6 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
       7. Use the output value `slack_bot_listener_endpoint` for the Request URL
 9. Test the integration from slack by calling `/ldap run` or manually by triggering the LDAP maintenance step function with the following payload: `{"action": "query" }`
 
-## Testing
-
-At the moment, testing is manual:
-
-```
-# Replace "xxx" with an actual AWS profile, then execute the integration tests.
-export AWS_PROFILE=xxx 
-make terraform/pytest PYTEST_ARGS="-v --nomock"
-```
-
 ## References
 
 - The [AD Schema](https://docs.microsoft.com/en-us/windows/win32/adschema/active-directory-schema)
