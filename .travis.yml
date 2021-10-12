@@ -7,6 +7,7 @@ node_js:
 
 stages:
   - lint
+  - test
   - deploy
 
 if: branch = master OR type = pull_request
@@ -15,7 +16,15 @@ jobs:
   include:
     - stage: lint
       name: Project Syntax Verification
-      script: make && make docker/run target=lint
+      script: make docker/run target=lint
+    - stage: test
+      name: Apply Terraform test configs in mockstack
+      install:
+        - make docker-compose/install
+        - make mockstack/up
+      script: make mockstack/pytest
+      after_script:
+        - make mockstack/clean
     - stage: deploy
       if: branch = master AND type = push AND repo = plus3it/terraform-aws-ldap-maintainer
       before_script:
