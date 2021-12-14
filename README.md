@@ -24,7 +24,7 @@ This project deploys a collection of lambda functions, an api gateway endpoint, 
 
     **Note:** This can be accomplished via SimpleAD by creating an ALB that listens via TLS on port 636 and forwards requests to your SimpleAD A record. See the associated [AWS blog post](https://aws.amazon.com/blogs/security/how-to-configure-an-ldaps-endpoint-for-simple-ad/) or the tests of this project for a reference architecture.
 
-2. Within your LDAP directory create a user that will be used by the lambda function. This user will need permissions to query LDAP and disable users.
+2. Within your LDAP directory create a user that will be used by the lambda function. This user will need read permissions to query LDAP, and write permissions to user objects for the properties `userAccountControl` and `description`.
 
     **Note:** Refer to the following article to scope this permission to a single user: [Delegate the Enable/Disable Accounts Permission in Active Directory](https://thebackroomtech.com/2009/07/01/howto-delegate-the-enabledisable-accounts-permission-in-active-directory/)
 
