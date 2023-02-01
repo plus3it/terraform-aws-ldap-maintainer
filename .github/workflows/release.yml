@@ -7,7 +7,7 @@ on:
   # Run on push to main when .bumpversion.cfg version is updated
   push:
     branches:
-      - main
+      - master
     paths:
       - .bumpversion.cfg
 
