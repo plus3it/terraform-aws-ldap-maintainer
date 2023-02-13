@@ -1,42 +1,48 @@
 version: 2
 updates:
-- package-ecosystem: docker
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-- package-ecosystem: docker
-  directory: "/modules/ldap_query/layer"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/modules/ldap_query/lambda"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/modules/ldap_query/layer"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/modules/slack_notifier/lambda"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/modules/slack_bot/lambda"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: terraform
-  directory: "/modules/ldap_query"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-- package-ecosystem: terraform
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  # Maintain dependencies for dockerfiles
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "/modules/ldap_query/layer"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: pip
+    directory: "/modules/ldap_query/lambda"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: pip
+    directory: "/modules/ldap_query/layer"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: pip
+    directory: "/modules/slack_notifier/lambda"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: pip
+    directory: "/modules/slack_bot/lambda"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: terraform
+    directory: "/modules/ldap_query"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: terraform
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
