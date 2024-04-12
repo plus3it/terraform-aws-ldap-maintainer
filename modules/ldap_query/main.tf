@@ -55,7 +55,7 @@ resource "aws_security_group" "lambda" {
 }
 
 module "lambda_layer" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v7.2.5"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v7.2.6"
 
   create_layer = true
 
