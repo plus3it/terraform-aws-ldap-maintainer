@@ -5,6 +5,7 @@ Removes specified user emails from a target DynamoDB table
 Returns:
     null
 """
+
 import collections
 import json
 import logging
