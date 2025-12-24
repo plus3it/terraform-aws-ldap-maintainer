@@ -34,12 +34,12 @@ if root.handlers:
     for log_handler in root.handlers:
         root.removeHandler(log_handler)
 
-LOG_FILE_NAME = ""
+log_file_name = ""
 if not os.environ.get("AWS_EXECUTION_ENV"):
-    LOG_FILE_NAME = "dynamodb_cleanup.log"
+    log_file_name = "dynamodb_cleanup.log"
 
 logging.basicConfig(
-    filename=LOG_FILE_NAME,
+    filename=log_file_name,
     format="%(asctime)s.%(msecs)03dZ [%(name)s][%(levelname)-5s]: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
     level=LOG_LEVELS[os.environ.get("LOG_LEVEL", "").lower()],
