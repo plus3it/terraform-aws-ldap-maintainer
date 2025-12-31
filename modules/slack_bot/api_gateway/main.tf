@@ -65,7 +65,7 @@ resource "aws_api_gateway_integration" "proxy_listener" {
 }
 
 locals {
-  gw_execution_arn           = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${var.target_api_gw_id}"
+  gw_execution_arn           = "arn:aws:execute-api:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${var.target_api_gw_id}"
   slack_bot_api_endpoint_arn = "${local.gw_execution_arn}/*/${aws_api_gateway_method.proxy_post.http_method}${aws_api_gateway_resource.proxy.path}"
 }
 
