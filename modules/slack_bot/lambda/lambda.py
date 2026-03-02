@@ -2,6 +2,7 @@
 """
 Slack chat-bot Lambda handler.
 """
+
 import boto3
 import collections
 import json
