@@ -9,7 +9,6 @@ from datetime import datetime
 
 import slack
 
-
 DEFAULT_LOG_LEVEL = logging.DEBUG
 LOG_LEVELS = collections.defaultdict(
     lambda: DEFAULT_LOG_LEVEL,

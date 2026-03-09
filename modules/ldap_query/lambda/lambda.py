@@ -3,6 +3,7 @@
 
 Requires the credentials of a user with domain admin privileges
 """
+
 import collections
 import fnmatch
 import json
@@ -14,7 +15,6 @@ import boto3
 import ldap
 import ldap.asyncsearch
 from jinja2 import Environment, FileSystemLoader
-
 
 DEFAULT_LOG_LEVEL = logging.DEBUG
 LOG_LEVELS = collections.defaultdict(

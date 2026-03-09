@@ -12,7 +12,6 @@ import ldap
 import ldap.asyncsearch
 import ldap.modlist
 
-
 DEFAULT_LOG_LEVEL = logging.DEBUG
 LOG_LEVELS = collections.defaultdict(
     lambda: DEFAULT_LOG_LEVEL,
