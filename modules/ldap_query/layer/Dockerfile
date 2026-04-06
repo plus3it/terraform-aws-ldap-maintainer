@@ -1,4 +1,4 @@
-FROM amazonlinux@sha256:162fc5b69e11e81023f83a1ab618b184927ff3002d0852432af3b6ae4a1b5304
+FROM amazonlinux@sha256:c4543691c8ce4157cbfe7d10170106eccb9dedd61f022980f062788d00e8af51
 
 RUN yum install -y \
   zip \
